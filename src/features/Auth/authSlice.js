@@ -1,13 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import userApi from 'api/authApi';
+import {authApi} from 'api';
 import storageKeys from 'constants/storage-keys';
 
 
 export const login = createAsyncThunk('user/login', async (payload) => {
-    const data = await userApi.login(payload);
+    const data = await authApi.login(payload);
     localStorage.setItem(storageKeys.TOKEN, data.results.token);
     localStorage.setItem(storageKeys.USER, JSON.stringify(data.results));
-    return data;
+    return data.results;
 });
 
 const userSlice = createSlice({

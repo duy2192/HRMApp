@@ -15,7 +15,6 @@ Login.propTypes = {
 function Login(props) {
     const dispatch=useDispatch()
     const {enqueueSnackbar} =useSnackbar()
-    const {closeDialog}=props
     const navigate = useNavigate()
 
     const handleSubmit= async (value)=>{
@@ -23,9 +22,6 @@ function Login(props) {
             const action=  login(value)
             const resultAction= await dispatch(action)
             unwrapResult(resultAction) 
-            if(closeDialog){
-                closeDialog()
-            }
             navigate('/')
         } catch (error) {
             enqueueSnackbar(error.message,{variant: 'error'})

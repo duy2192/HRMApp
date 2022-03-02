@@ -10,6 +10,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import logo from "assets/img/logo.png";
+import { useNavigate } from "react-router-dom";
 LoginForm.propTypes = {
   onSubmit: PropTypes.func,
 };
@@ -50,6 +51,7 @@ const useStyles = makeStyles({
 
 function LoginForm(props) {
   const classes = useStyles();
+  const navigate=useNavigate()
   const schema = yup.object().shape({
     identifier: yup.string().required("Chưa nhập Email hoặc Tên tài khoản!"),
     password: yup.string().required("Chưa nhập mật khẩu!"),
@@ -87,8 +89,8 @@ function LoginForm(props) {
           form={form}
           disabled={isSubmitting}
         />
-        <Typography className={classes.forgot}>
-          <i>Quên mật khẩu?</i>
+        <Typography className={classes.forgot} >
+          <i onClick={()=>navigate("/auth/forgot")}>Quên mật khẩu?</i>
         </Typography>
         {isSubmitting ? (
           <Box className={classes.progress}>

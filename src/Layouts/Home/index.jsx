@@ -1,6 +1,7 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import MenuIcon from "@mui/icons-material/Menu";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import { Avatar } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -13,14 +14,18 @@ import List from "@mui/material/List";
 import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import avatar from "assets/img/avatar.png";
+import logo from "assets/img/logo1.png";
 import MenuUser from "components/Menu/MenuUser";
+import NotFound from 'components/NotFound';
+import Dashboard from "features/Dashboard";
+import HRManagement from 'features/HRManagement';
+import ManageAccount from 'features/ManageAccount';
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import ManagementList from "./ManagementList";
-import logo from "assets/img/logo1.png"
-import avatar from "assets/img/avatar.png"
-import SearchBox from "./SearchBox";
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import UserFeature from "features/User";
+
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -47,10 +52,11 @@ const Drawer = styled(MuiDrawer, {
 })(({ theme, open }) => ({
   "& .MuiDrawer-paper": {
     background: "#263A4E",
-    color:"#fff",
+    color: "#fff",
     position: "relative",
     whiteSpace: "nowrap",
     width: drawerWidth,
+    overflowX: "hidden",
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -93,7 +99,7 @@ function DashboardContent() {
         <AppBar position="absolute" open={open}>
           <Toolbar
             sx={{
-              pr: "24px", 
+              pr: "24px",
             }}
           >
             <IconButton
@@ -131,34 +137,30 @@ function DashboardContent() {
               variant="h6"
               color="#34495e"
               noWrap
-              sx={{ flexGrow: 1, cursor: "pointer",display:"inline" }}
+              sx={{ flexGrow: 1, cursor: "pointer", display: "inline" }}
               onClick={() => {
                 navigate("/");
               }}
             >
-              <SearchBox/>
             </Typography>
-            
-              <IconButton>
-                <NotificationsNoneIcon sx={{
-                  color:"#222f3e"
-                }}/>
-                </IconButton>
-            <IconButton color="inherit" onClick={handleUserClick}>
-              <Avatar
-                src={avatar}
-                alt="Avatar"
+
+            <IconButton>
+              <NotificationsNoneIcon
+                sx={{
+                  color: "#222f3e",
+                }}
               />
+            </IconButton>
+            <IconButton color="inherit" onClick={handleUserClick}>
+              <Avatar src={avatar} alt="Avatar" />
             </IconButton>
             <MenuUser handleCloseMenu={handleCloseMenu} anchorEl={anchorEl} />
           </Toolbar>
         </AppBar>
-        <Drawer variant="permanent" open={open} >
+        <Drawer variant="permanent" open={open}>
           <Divider />
           <List style={{ marginTop: "80px" }}>
-            <ManagementList>
-
-            </ManagementList>
+            <ManagementList></ManagementList>
           </List>
 
           <Divider />
@@ -175,7 +177,13 @@ function DashboardContent() {
                 <IconButton onClick={toggleDrawer}>
                   <ChevronLeftIcon style={{ color: "#fff" }} />
                 </IconButton>
-                <Typography color="#fff" style={{ paddingLeft:"20px" }}>Thu gọn</Typography>
+                <Typography
+                  color="#fff"
+                  style={{ paddingLeft: "20px", cursor: "pointer" }}
+                  onClick={toggleDrawer}
+                >
+                  Thu gọn
+                </Typography>
               </>
             ) : (
               <IconButton onClick={toggleDrawer}>
@@ -194,7 +202,15 @@ function DashboardContent() {
           }}
         >
           <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}></Container>
+          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/user/*" element={<UserFeature />} />
+              <Route path="/ho-so/*" element={<HRManagement />}></Route>
+              <Route path="/tai-khoan/*" element={<ManageAccount />}></Route>
+              <Route path="*" element={<NotFound />}></Route>
+            </Routes>
+          </Container>
         </Box>
       </Box>
     </ThemeProvider>

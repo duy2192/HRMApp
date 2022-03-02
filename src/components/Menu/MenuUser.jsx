@@ -1,6 +1,5 @@
 import Logout from '@mui/icons-material/Logout';
-import Settings from '@mui/icons-material/Settings';
-import Avatar from '@mui/material/Avatar';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
@@ -25,6 +24,13 @@ function MenuUser(props) {
     const action = logOut()
     dispatch(action)
     navigate('/user/login')
+    }
+    const handleAccountClick=()=>{
+    navigate('/user/information')
+    }
+    const handleChangePwdClick=()=>{
+
+    navigate('/user/changepassword')
     }
     return (
         <div>
@@ -62,17 +68,17 @@ function MenuUser(props) {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem>
+        <MenuItem onClick={handleAccountClick}>
           <Avatar src={avatar}
                 alt="Avatar" /> Thông tin tài khoản
         </MenuItem>
         <Divider />
 
-        <MenuItem>
+        <MenuItem onClick={handleChangePwdClick}>
           <ListItemIcon>
-            <Settings fontSize="small" style={{color:"#222f3e"}}/>
+            <ChangeCircleIcon fontSize="small" style={{color:"#222f3e"}}/>
           </ListItemIcon>
-          Cài đặt
+          Đổi mật khẩu
         </MenuItem>
         <MenuItem onClick={handleLogoutClick}>
           <ListItemIcon>

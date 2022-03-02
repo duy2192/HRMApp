@@ -15,8 +15,9 @@ PasswordField.propTypes = {
 };
 
 const useStyles = makeStyles({
-    multilineColor: {
-        background:"#fff"
+    input: {
+        background:"#fff",
+        zIndex:"0"
     },
   });
 function PasswordField(props) {
@@ -46,7 +47,7 @@ function PasswordField(props) {
                                 onChange={onChange}
                                 disabled={disabled}
                                 InputProps={{
-                                    className: classes.multilineColor
+                                    className: classes.input
                                   }}
                             />
                         </FormControl>

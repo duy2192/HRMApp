@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as React from 'react';
 import { Controller } from 'react-hook-form';
 import Select from 'react-select';
-
+import './style.css'
 SelectField.propTypes = {
   data: PropTypes.array.isRequired,
   label: PropTypes.string,
@@ -18,6 +18,7 @@ function SelectField(props) {
   const option = data.map((item) => ({
     value: item.value || '',
     label: ` ${item.label}` || '',
+    code: ` ${item.code}` || '',
   }));
   return (
     <Controller
@@ -27,11 +28,12 @@ function SelectField(props) {
         <>
           <Select
             placeholder={<div>{label}</div>}
-            onChange={(val) => { if(changeValue) {changeValue(val.value)};onChange(val.value)}}
+            onChange={(val) => { if(changeValue) {changeValue(val)};onChange(val.value)}}
             value={option.find((c) => c.value === value)}
             options={option}
+            className="select"            
           />
-          <FormHelperText style={{ color: '#d32f2f', paddingLeft:'15px' }}>{error?.message}</FormHelperText>
+          <FormHelperText style={{ color: 'red',fontWeight:"bold" }}>{error?.message}</FormHelperText>
         </>
       )}
     />

@@ -2,6 +2,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 import CottageOutlinedIcon from '@mui/icons-material/CottageOutlined';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import FlagIcon from '@mui/icons-material/Flag';
 import PersonIcon from '@mui/icons-material/Person';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
@@ -24,11 +25,14 @@ const useStyles=makeStyles({
   }
 })
 export default function ManagementList(){
+  
   const navigate =useNavigate()
   const classes=useStyles()
+
   const handleClick=(to)=>{
     navigate (to)
   }
+
   return (
     <Box className={classes.root}>
       <ListItem button onClick={()=>{handleClick("/")}}  >
@@ -37,7 +41,13 @@ export default function ManagementList(){
         </ListItemIcon>
         <ListItemText primary="Tổng quan" />
       </ListItem>
-      <ListItem button onClick={()=>{handleClick("/")}}>
+      <ListItem button onClick={()=>{handleClick("/tai-khoan")}}  >
+        <ListItemIcon>
+          <ManageAccountsIcon className={classes.icon}/>
+        </ListItemIcon>
+        <ListItemText primary="Tài khoản" />
+      </ListItem>
+      <ListItem button onClick={()=>{handleClick("/ho-so")}}>
         <ListItemIcon>
           <PersonIcon className={classes.icon}/>
         </ListItemIcon>

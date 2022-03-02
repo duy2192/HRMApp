@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosClient = axios.create({
-  baseURL: process.env.REACT_APP_SERVER_HOST,
+  baseURL: `${process.env.REACT_APP_SERVER_HOST}api`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -30,7 +30,7 @@ axiosClient.interceptors.response.use(
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     const { config, status, data } = error.response;
-    const URLs = ['/user/login', '/user/register'];
+    const URLs = ['/auth/login', '/auth/forgotpwd','/auth/resetpwd'];
 
     if (URLs.includes(config.url) && status === 400) {
       const error = data.message || {};

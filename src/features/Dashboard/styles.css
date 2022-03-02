@@ -1,0 +1,36 @@
+a{
+    text-decoration: none !important;
+    color:black !important;
+}
+li{
+    list-style: none;
+}
+.overview{
+    background: #E5E5E5;
+}
+.btn-report{
+    background: #FFFFFF;
+    border-radius: 10px;
+    border:#FFFFFF;
+    padding:0.5rem 1.2rem;
+}
+.link-report{
+    color:#0029FF !important;
+    font-weight: 500;
+}
+
+/* section2 */
+.sec2-item{
+    width: 24%;
+    background: #FFFFFF;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-right: 0.5rem;
+}
+
+/* section3 */
+.item-chart{
+    padding:2rem;
+    background: #FFFFFF;
+    border-radius: 10px;
+}

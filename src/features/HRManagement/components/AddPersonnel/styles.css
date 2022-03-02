@@ -1,0 +1,90 @@
+a{
+    text-decoration: none !important;
+    color:black !important;
+}
+li{
+    list-style: none;
+}
+
+.header{
+    
+    position: absolute;
+    height: auto;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    box-shadow: 0px 3px 6px #00000029;
+    background: #FFFFFF;
+}
+.header-info{
+    padding-top:1rem;
+    padding-bottom:1rem;
+}
+.list-header{
+    display: flex;
+   
+    float: left;
+}
+.item-header{
+    padding-right:2rem;
+}
+.search-header{
+background: rgba(196, 196, 196, 0.32);
+border-radius: 10px;
+}
+.list-header-right{
+    float:right;
+    display: flex;
+}
+
+.label{
+    padding-top: 20px;
+    padding-left: 40px;
+    font-size: 18px;
+}
+
+.profile-title h3{
+    padding: 0.5rem 1.5rem;
+}
+.profile-title{
+    display: flex;
+    justify-content: space-between;
+
+    /* width: 33%; */
+}
+.profile-function{
+    width: 60%;
+}
+.btn-function{
+    background: #FFFFFF;
+    border: 1px solid #000000;
+    box-sizing: border-box;
+    border-radius: 10px;
+    padding: 0.5rem 2rem;
+    margin-left: 1rem;
+}
+.link-function{
+    float: right;
+}
+
+.profile-2{
+    background: #FFFFFF;
+    border-radius: 10px;
+    width: 100%;
+    height:100px;
+
+}
+.thongtin{
+    background: #FFFFFF;
+
+}
+/* profile-3 */
+.profile-3{
+    background: #FFFFFF;
+}
+.btn-add{
+    background: rgba(153, 204, 255, 0.6);
+}
+.input-item{
+    border-radius: 10px;
+}

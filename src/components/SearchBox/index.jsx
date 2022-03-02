@@ -41,9 +41,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
   },
 }));
-function SearchBox(props) {
+function SearchBox({handleSearchBox}) {
+  const handleOnchange=(e)=>{
+    if(!handleSearchBox) return
+    handleSearchBox(e.target.value)
+  }
   return (
-    <Search>
+    <Search onChange={handleOnchange}>
       <SearchIconWrapper>
         <SearchIcon />
       </SearchIconWrapper>
