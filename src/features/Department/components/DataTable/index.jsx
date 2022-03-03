@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { DataGrid } from "@mui/x-data-grid";
-import { personnelApi } from "api";
+import { departmentApi } from "api";
 import SearchBox from "components/SearchBox";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +22,7 @@ const useStyles = makeStyles({
 });
 export default function DataTable() {
   const navigate = useNavigate();
-  const [personnelList, setPersonnelList] = useState([]);
+  const [depList, setDepList] = useState([]);
   const [searchKey, setSearchKey] = useState("");
   const [pagination, setPagination] = React.useState(0);
   const [page, setPage] = React.useState(1);
@@ -47,8 +47,8 @@ export default function DataTable() {
     (async () => {
       try {
         setLoading(true);
-        const result = await personnelApi.getAll(queryParams);
-        setPersonnelList(result.results);
+        const result = await departmentApi.getAll(queryParams);
+        setDepList(result.results);
         setPagination(result.pagination);
         setLoading(false);
       } catch (error) {
@@ -60,29 +60,17 @@ export default function DataTable() {
     { field: "id", headerName: "ID", width: 80, type: "number" },
     { field: "ten", headerName: "Họ Tên", width: 250 },
     {
-      field: "gioitinh",
-      headerName: "Giới tính",
-      width: 100,
+      field: "diachi",
+      headerName: "Địa chỉ",
+      width: 350,
     },
     {
-      field: "sdt",
-      headerName: "Số điện thoại",
-      type: "string",
-      width: 150,
-    },
-    {
-      field: "email",
-      headerName: "email",
-      type: "string",
-      width: 200,
-    },
-    {
-      field: "dv",
-      headerName: "Đơn vị",
+      field: "nv",
+      headerName: "Số lượng nhân viên",
       width: 150,
       renderCell: (e) => {
-        const name = e.row.dv.ten;
-        return <Typography>{name}</Typography>;
+        const count = e.row.ns.length;
+        return <Typography>{count}</Typography>;
       },
     },
   ];
@@ -90,7 +78,7 @@ export default function DataTable() {
     setPage(page + 1);
   };
   const handleAddClick = () => {
-    navigate("/ho-so/them");
+    navigate("/don-vi/them");
   };
   return (
     <Box className={classes.root}>
@@ -108,13 +96,13 @@ export default function DataTable() {
             display: "inline",
           }}
         >
-          Thêm hồ sơ
+          Thêm đơn vị
         </Button>
       </Box>
 
       <DataGrid
         onPageChange={handlePageChange}
-        rows={personnelList}
+        rows={depList}
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[10]}

@@ -1,17 +1,17 @@
 import { Box, Paper, Grid, Typography } from "@mui/material";
 import React from "react";
 
-function Account({account}) {
+function PositionDetail({position}) {
   return (
     <Box>
-      <Paper sx={{padding:"50px"}}>
+      <Paper sx={{padding:"40px"}}>
         <Grid container style={{ paddingTop: "30px" }}>
           <Grid item lg={3} md={3} sm={3} xs={6} pl={5}>
             <Typography variant="body" style={{ fontWeight: "bold" }}>Họ tên</Typography>
           </Grid>
           <Grid item lg={5} md={5} sm={5} xs={6}>
             <Typography component="p" variant="body" >
-              {account.name}
+              {position.ten}
             </Typography>
           </Grid>
         </Grid>
@@ -21,7 +21,7 @@ function Account({account}) {
           </Grid>
           <Grid item lg={5} md={5} sm={5} xs={6}>
             <Typography variant="body" >
-            {account.email}
+            {position.mota}
             </Typography>
           </Grid>
         </Grid>
@@ -30,4 +30,4 @@ function Account({account}) {
   );
 }
 
-export default Account;
+export default PositionDetail;

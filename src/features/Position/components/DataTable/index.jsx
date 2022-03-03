@@ -1,10 +1,13 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { DataGrid } from "@mui/x-data-grid";
-import { personnelApi } from "api";
+import { positionApi } from "api";
 import SearchBox from "components/SearchBox";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AddPosition from "../AddPosition";
+import UpdatePosition from "../UpdatePosition";
+import EditIcon from '@mui/icons-material/Edit';
 
 const useStyles = makeStyles({
   root: {
@@ -22,10 +25,14 @@ const useStyles = makeStyles({
 });
 export default function DataTable() {
   const navigate = useNavigate();
-  const [personnelList, setPersonnelList] = useState([]);
+  const [depList, setDepList] = useState([]);
   const [searchKey, setSearchKey] = useState("");
   const [pagination, setPagination] = React.useState(0);
   const [page, setPage] = React.useState(1);
+  const [openFormAdd, setOpenFormAdd] = React.useState(false);
+  const [openUpdateForm, setOpenUpdateForm] = React.useState(false);
+  const [positionDetail, setPositionDetail] = React.useState({});
+  const [refreshKey, setRefreshKey] = React.useState({});
   const [loading, setLoading] = React.useState(false);
   const classes = useStyles();
 
@@ -47,42 +54,41 @@ export default function DataTable() {
     (async () => {
       try {
         setLoading(true);
-        const result = await personnelApi.getAll(queryParams);
-        setPersonnelList(result.results);
+        const result = await positionApi.getAll(queryParams);
+        setDepList(result.results);
         setPagination(result.pagination);
         setLoading(false);
       } catch (error) {
         console.log(error);
       }
     })();
-  }, [queryParams, searchKey]);
+  }, [queryParams, searchKey,refreshKey]);
   const columns = [
     { field: "id", headerName: "ID", width: 80, type: "number" },
     { field: "ten", headerName: "Họ Tên", width: 250 },
     {
-      field: "gioitinh",
-      headerName: "Giới tính",
-      width: 100,
-    },
-    {
-      field: "sdt",
-      headerName: "Số điện thoại",
-      type: "string",
-      width: 150,
-    },
-    {
-      field: "email",
-      headerName: "email",
-      type: "string",
-      width: 200,
-    },
-    {
-      field: "dv",
-      headerName: "Đơn vị",
+      field: "nv",
+      headerName: "Số lượng nhân viên",
       width: 150,
       renderCell: (e) => {
-        const name = e.row.dv.ten;
-        return <Typography>{name}</Typography>;
+        const count = e.row.ns.length;
+        return <Typography>{count}</Typography>;
+      },
+    },
+    {
+      field: 'update',
+      headerName: 'Cập nhật',
+      sortable: false,
+      renderCell: (e) => {
+        const handleOnClick = () => {
+          setOpenUpdateForm(true);
+          setPositionDetail(e.row);
+        };
+        return (
+          <IconButton onClick={handleOnClick}>
+            <EditIcon />
+          </IconButton>
+        );
       },
     },
   ];
@@ -90,7 +96,15 @@ export default function DataTable() {
     setPage(page + 1);
   };
   const handleAddClick = () => {
-    navigate("/ho-so/them");
+    setOpenFormAdd(true)
+  };
+  const handleClose = (e,r) => {
+    if (r !== 'backdropClick') {
+      setOpenFormAdd(false);
+      setOpenUpdateForm(false);
+      setPositionDetail({})
+      setRefreshKey(refreshKey+1)
+    }
   };
   return (
     <Box className={classes.root}>
@@ -108,13 +122,13 @@ export default function DataTable() {
             display: "inline",
           }}
         >
-          Thêm hồ sơ
+          Thêm chức vụ
         </Button>
       </Box>
 
       <DataGrid
         onPageChange={handlePageChange}
-        rows={personnelList}
+        rows={depList}
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[10]}
@@ -127,6 +141,8 @@ export default function DataTable() {
         hideFooterSelectedRowCount
         onRowDoubleClick={handleOnClick}
       />
+      <AddPosition open={openFormAdd} handleClose={handleClose}/>
+      <UpdatePosition open={openUpdateForm} handleClose={handleClose} position={positionDetail}/>
     </Box>
   );
 }

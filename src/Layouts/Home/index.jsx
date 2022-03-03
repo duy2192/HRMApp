@@ -25,6 +25,10 @@ import React, { useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import ManagementList from "./ManagementList";
 import UserFeature from "features/User";
+import DepartmentFeature from "features/Department";
+import LevelFeature from "features/Level";
+import PositionFeature from "features/Position";
+import { useSelector } from "react-redux";
 
 const drawerWidth = 240;
 
@@ -81,6 +85,7 @@ const mdTheme = createTheme();
 function DashboardContent() {
   const [open, setOpen] = useState(true);
   const [anchorEl, setAnchorEl] = useState(null);
+  const loggedInUser = useSelector((state) => state.user.current);
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
@@ -159,7 +164,7 @@ function DashboardContent() {
         </AppBar>
         <Drawer variant="permanent" open={open}>
           <Divider />
-          <List style={{ marginTop: "80px" }}>
+          <List style={{ marginTop: "100px" }}>
             <ManagementList></ManagementList>
           </List>
 
@@ -207,7 +212,12 @@ function DashboardContent() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/user/*" element={<UserFeature />} />
               <Route path="/ho-so/*" element={<HRManagement />}></Route>
+              <Route path="/don-vi/*" element={<DepartmentFeature />}></Route>
+              <Route path="/trinh-do/*" element={<LevelFeature />}></Route>
+              <Route path="/chuc-vu/*" element={<PositionFeature />}></Route>
               <Route path="/tai-khoan/*" element={<ManageAccount />}></Route>
+              <Route path="/thiet-lap/*" element={<NotFound />}></Route>
+              <Route path="/bao-cao/*" element={<NotFound />}></Route>
               <Route path="*" element={<NotFound />}></Route>
             </Routes>
           </Container>

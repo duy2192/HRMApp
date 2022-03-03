@@ -25,9 +25,17 @@ export const personnelApi = {
     const url = `/personnel/position/${id}`;
     return axiosClient.get(url);
   },
+  removePosition(id) {
+    const url = `/personnel/position/${id}`;
+    return axiosClient.delete(url);
+  },
   addLevel(data) {
     const url = '/personnel/level';
     return axiosClient.post(url, data);
+  },
+  removeLevel(id) {
+    const url = `/personnel/level/${id}`;
+    return axiosClient.delete(url);
   },
   addPosition(data) {
     const url = '/personnel/position';

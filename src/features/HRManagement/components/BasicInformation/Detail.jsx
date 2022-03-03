@@ -21,6 +21,7 @@ const useStyles = makeStyles({
 });
 function Detail({ personnel }) {
   const classes = useStyles();
+  console.log(personnel);
   return (
       <Box className={classes.root} >
         <Grid container>

@@ -13,5 +13,9 @@ export const rewardApi = {
     const url = '/reward';
     return axiosClient.post(url, data);
   },
+   remove(id) {
+    const url = `/reward/${id}`;
+    return axiosClient.delete(url);
+  },
 };
 

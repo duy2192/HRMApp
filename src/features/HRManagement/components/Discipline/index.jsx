@@ -1,10 +1,13 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button,IconButton,Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { DataGrid } from "@mui/x-data-grid";
 import { disciplineApi } from "api";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import AddForm from "./AddForm";
+import DeleteIcon from "@mui/icons-material/Delete";
+import {convertTime} from "utils";
+
 const useStyles = makeStyles({
   root: {
     "& .MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
@@ -37,13 +40,26 @@ export default function Reward({ personnelid }) {
       field: "ngayqd",
       headerName: "Ngày quyết định",
       width: 250,
-      type: "number",
-    //   renderCell: (e) => {
-    //     const name = e.row.cv.ten;
-    //     return <Typography>{name}</Typography>;
-    //   },
+      renderCell: (e) => {
+        const date = e.row.ngayqd;
+        return <Typography>{convertTime(date)}</Typography>;
+      },
     },
     { field: "hinhthuc", headerName: "Hình thức", width: 250 },
+    {
+      field: "action",
+      headerName: "",
+      width: 250,
+      type: "number",
+      renderCell: (e) => {
+        const id = e.row.id;
+        return (
+          <IconButton onClick={() => handleRemove(id)}>
+            <DeleteIcon />
+          </IconButton>
+        );
+      },
+    },
   ];
 
   useEffect(() => {
@@ -70,6 +86,17 @@ export default function Reward({ personnelid }) {
       enqueueSnackbar("Thêm kỷ luật thành công", { variant: "success" });
       setMode("");
       setRefreshKey((state) => state+1);
+    } catch (error) {
+      enqueueSnackbar("Lỗi", { variant: "error" });
+    }
+  };
+
+  const handleRemove = async (id) => {
+    try {
+      await disciplineApi.remove(id);
+      enqueueSnackbar("Xóa kỷ luật thành công", { variant: "success" });
+      setMode("");
+      setRefreshKey((state) => state + 1);
     } catch (error) {
       enqueueSnackbar("Lỗi", { variant: "error" });
     }

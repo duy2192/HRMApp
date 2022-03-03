@@ -13,5 +13,13 @@ export const positionApi = {
     const url = '/position';
     return axiosClient.post(url, data);
   },
+   update(data) {
+    const url = '/position';
+    return axiosClient.patch(url, data);
+  },
+  remove(id) {
+    const url = `/position/${id}`;
+    return axiosClient.delete(url);
+  },
 };
 

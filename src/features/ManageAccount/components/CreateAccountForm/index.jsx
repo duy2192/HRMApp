@@ -4,10 +4,12 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { makeStyles } from "@mui/styles";
 import { Box } from "@mui/system";
 import InputField from "components/FormControl/InputField";
+import SelectField from "components/FormControl/SelectField";
 import PropTypes from "prop-types";
 import React from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
+import { ROLE_ACCOUNT } from "constants";
 CreateAccountForm.propTypes = {
   onSubmit: PropTypes.func,
 };
@@ -45,11 +47,13 @@ function CreateAccountForm(props) {
       .email("Sai định dạng email!")
       .required("Chưa nhập Email!"),
     name: yup.string().required("Nhập tên người đăng ký!"),
+    role: yup.number().typeError("Chưa chọn vai trò!").required("Chưa chọn vai trò!"),
   });
   const form = useForm({
     defaultValues: {
       email: "",
       name: "",
+      role: "",
     },
     reValidateMode: "onSubmit",
 
@@ -63,46 +67,44 @@ function CreateAccountForm(props) {
   };
   const { isSubmitting } = form.formState;
   return (
-      <Paper>
-        <form
-          onSubmit={form.handleSubmit(handleSubmit)}
-          className={classes.form}
-        >
-          <InputField
-            name="email"
-            label="Email"
-            form={form}
-            disabled={isSubmitting}
-          />
-          <InputField
-            name="name"
-            label="Họ tên"
-            form={form}
-            disabled={isSubmitting}
-          />
-          {isSubmitting ? (
-            <Box className={classes.progress}>
-              <CircularProgress />
-            </Box>
-          ) : (
-            <Box className={classes.submit}>
-              <Button
-                disabled={isSubmitting}
-                variant="contained"
-                type="submit"
-                size="large"
-                sx={{
-                  color: "#ff4757",
-                  background: "#99CCFF",
-                  textTransform: "none",
-                }}
-              >
-                Đăng ký
-              </Button>
-            </Box>
-          )}
-        </form>
-      </Paper>
+    <Paper>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className={classes.form}>
+        <InputField
+          name="email"
+          label="Email"
+          form={form}
+          disabled={isSubmitting}
+        />
+        <InputField
+          name="name"
+          label="Họ tên"
+          form={form}
+          disabled={isSubmitting}
+        />
+        <SelectField data={ROLE_ACCOUNT} name="role" form={form} />
+        {isSubmitting ? (
+          <Box className={classes.progress}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Box className={classes.submit}>
+            <Button
+              disabled={isSubmitting}
+              variant="contained"
+              type="submit"
+              size="large"
+              sx={{
+                color: "#000",
+                background: "#99CCFF",
+                textTransform: "none",
+              }}
+            >
+              Đăng ký
+            </Button>
+          </Box>
+        )}
+      </form>
+    </Paper>
   );
 }
 

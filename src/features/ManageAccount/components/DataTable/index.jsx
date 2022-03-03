@@ -1,7 +1,7 @@
-import { Box } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { DataGrid } from "@mui/x-data-grid";
-import {authApi} from "api";
+import { authApi } from "api";
 import SearchBox from "components/SearchBox";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -59,8 +59,8 @@ export default function DataTable() {
       try {
         setLoading(true);
         const result = await authApi.getAll(queryParams);
-        setPersonnelList(result.results.data);
-        setPagination(result.results.pagination);
+        setPersonnelList(result.results);
+        setPagination(result.pagination);
         setLoading(false);
       } catch (error) {
         console.log(error);
@@ -81,13 +81,46 @@ export default function DataTable() {
       type: "string",
       width: 150,
     },
+    {
+      field: "role",
+      headerName: "Vai trò",
+      type: "string",
+      width: 150,
+      renderCell: (e) => {
+        let role = e.row.role;
+        if(role==1) role="Nhân viên"
+        if(role==2) role="Quản lý"
+        if(role==3) role="Quản trị viên"
+        return <Typography>{role}</Typography>;
+      },
+    },
+
   ];
   const handlePageChange = (page) => {
     setPage(page + 1);
   };
+  const handleAddClick = () => {
+    navigate("/tai-khoan/them");
+  };
   return (
     <Box className={classes.root}>
+            <Box style={{ paddingLeft: "25px", paddingTop: "10px",display:"flex",justifyContent:"space-between" }}>
+
       <SearchBox handleSearchBox={handleSearchBox}/>
+      <Button
+          variant="contained"
+          onClick={handleAddClick}
+          size="small"
+          sx={{
+            color: "#000000",
+            background: "#99CCFF",
+            textTransform: "none",
+            display: "inline",
+          }}
+        >
+          Thêm tài khoản
+        </Button>
+        </Box>
       <DataGrid
         onPageChange={handlePageChange}
         rows={personnelList}

@@ -1,11 +1,13 @@
-import { Typography, Box, Button } from "@mui/material";
+import { Typography, Box, Button,IconButton } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { rewardApi } from "api";
-import { formatPrice } from "utils";
+import { convertTime } from "utils";
 import { useSnackbar } from "notistack";
 import AddForm from "./AddForm";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 const useStyles = makeStyles({
   root: {
     "& .MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
@@ -39,12 +41,26 @@ export default function Reward({ personnelid }) {
       headerName: "Ngày quyết định",
       width: 250,
       type: "number",
-    //   renderCell: (e) => {
-    //     const name = e.row.cv.ten;
-    //     return <Typography>{name}</Typography>;
-    //   },
+      renderCell: (e) => {
+        const date = e.row.ngayqd;
+        return <Typography>{convertTime(date)}</Typography>;
+      },
     },
     { field: "hinhthuc", headerName: "Hình thức", width: 250 },
+    {
+      field: "action",
+      headerName: "",
+      width: 250,
+      type: "number",
+      renderCell: (e) => {
+        const id = e.row.id;
+        return (
+          <IconButton onClick={() => handleRemove(id)}>
+            <DeleteIcon />
+          </IconButton>
+        );
+      },
+    },
   ];
 
   useEffect(() => {
@@ -71,6 +87,16 @@ export default function Reward({ personnelid }) {
       enqueueSnackbar("Thêm khen thưởng thành công", { variant: "success" });
       setMode("");
       setRefreshKey((state) => state+1);
+    } catch (error) {
+      enqueueSnackbar("Lỗi", { variant: "error" });
+    }
+  };
+  const handleRemove = async (id) => {
+    try {
+      await rewardApi.remove(id);
+      enqueueSnackbar("Xóa khen thưởng thành công", { variant: "success" });
+      setMode("");
+      setRefreshKey((state) => state + 1);
     } catch (error) {
       enqueueSnackbar("Lỗi", { variant: "error" });
     }

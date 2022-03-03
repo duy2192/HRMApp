@@ -13,5 +13,9 @@ export const disciplineApi = {
     const url = '/discipline';
     return axiosClient.post(url, data);
   },
+  remove(id) {
+    const url = `/discipline/${id}`;
+    return axiosClient.delete(url);
+  },
 };
 

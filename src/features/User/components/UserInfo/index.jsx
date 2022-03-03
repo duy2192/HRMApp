@@ -4,9 +4,8 @@ import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles({
   root: {
-    overflowY: "scroll",
-    height: "350px",
     width: "100%",
+    padding:"60px"
   },
   label: {
     padding: "10px",
@@ -23,8 +22,8 @@ function UserInfo({ user }) {
   const classes = useStyles();
   return (
     <>
-      <Box>
-        <Paper>
+      <Box >
+        <Paper className={classes.root}>
             <Typography style={{
                 paddingTop:"30px",
                 textAlign:"center",

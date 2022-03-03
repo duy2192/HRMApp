@@ -1,7 +1,9 @@
-import { Box, Button, Typography } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { DataGrid } from "@mui/x-data-grid";
 import { personnelApi } from "api";
+import ConfirmBox from "components/ConfirmBox";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import AddForm from "./AddForm";
@@ -25,6 +27,7 @@ export default function Level({ personnelid }) {
   const [levelList, setLevelList] = useState([]);
   const [mode, setMode] = useState("");
   const { enqueueSnackbar } = useSnackbar();
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const columns = [
     {
@@ -59,10 +62,23 @@ export default function Level({ personnelid }) {
       field: "ketqua",
       headerName: "Kết quả",
       type: "string",
+      width: 100,
+    },
+    {
+      field: "action",
+      headerName: "",
+      type: "string",
       width: 150,
+      renderCell: (e) => {
+        const id = e.row.id;
+        return (
+          <IconButton onClick={() => handleRemove(id)}>
+            <DeleteIcon />
+          </IconButton>
+        );
+      },
     },
   ];
-
   useEffect(() => {
     (async () => {
       try {
@@ -72,7 +88,7 @@ export default function Level({ personnelid }) {
         console.log(error);
       }
     })();
-  }, [personnelid]);
+  }, [personnelid, refreshKey]);
   const handleAddClick = () => {
     setMode("add");
   };
@@ -84,8 +100,18 @@ export default function Level({ personnelid }) {
       };
       await personnelApi.addLevel(data);
       enqueueSnackbar("Thêm trình độ thành công", { variant: "success" });
-      setMode("")
-
+      setMode("");
+      setRefreshKey((state) => state + 1);
+    } catch (error) {
+      enqueueSnackbar("Lỗi", { variant: "error" });
+    }
+  };
+  const handleRemove = async (id) => {
+    try {
+      await personnelApi.removeLevel(id);
+      enqueueSnackbar("Xóa trình độ thành công", { variant: "success" });
+      setMode("");
+      setRefreshKey((state) => state + 1);
     } catch (error) {
       enqueueSnackbar("Lỗi", { variant: "error" });
     }
@@ -108,7 +134,7 @@ export default function Level({ personnelid }) {
             >
               Thêm trình độ
             </Button>
-
+            <ConfirmBox />
             <DataGrid
               // onPageChange={handlePageChange}
               rows={levelList}

@@ -1,10 +1,12 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { DataGrid } from "@mui/x-data-grid";
 import { personnelApi } from "api";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import AddForm from "./AddForm";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 const useStyles = makeStyles({
   root: {
     "& .MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
@@ -45,6 +47,20 @@ export default function Position({ personnelid }) {
       },
     },
     { field: "ngaybonhiem", headerName: "Ngày bổ nhiệm", width: 250 },
+    {
+      field: "action",
+      headerName: "",
+      type: "string",
+      width: 150,
+      renderCell: (e) => {
+        const id = e.row.id;
+        return (
+          <IconButton onClick={() => handleRemove(id)}>
+            <DeleteIcon />
+          </IconButton>
+        );
+      },
+    },
   ];
 
   useEffect(() => {
@@ -72,6 +88,16 @@ export default function Position({ personnelid }) {
       setRefreshKey((state) => state+1);
     } catch (error) {
       enqueueSnackbar("Nhân viên đang đảm nhiệm chức vụ này!", { variant: "error" });
+    }
+  };
+  const handleRemove = async (id) => {
+    try {
+      await personnelApi.removePosition(id);
+      enqueueSnackbar("Xóa chức vụ thành công", { variant: "success" });
+      setMode("");
+      setRefreshKey((state) => state + 1);
+    } catch (error) {
+      enqueueSnackbar("Lỗi", { variant: "error" });
     }
   };
   return (

@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography,IconButton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { DataGrid } from "@mui/x-data-grid";
 import { jobApi } from "api";
@@ -6,7 +6,7 @@ import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { convertTime } from "utils";
 import AddForm from "./AddForm";
-import { convertMySqlTime } from "utils";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const useStyles = makeStyles({
   root: {
@@ -41,6 +41,7 @@ function Jobs({ personnelid }) {
       }
     })();
   }, [personnelid,refreshKey]);
+
   const columns = [
     {
       field: "ngaybatdau",
@@ -70,6 +71,20 @@ function Jobs({ personnelid }) {
         return <Typography>{status == 1 ? "Đang làm" : "Đã nghỉ"}</Typography>;
       },
     },
+    {
+      field: "action",
+      headerName: "",
+      width: 50,
+      type: "number",
+      renderCell: (e) => {
+        const id = e.row.id;
+        return (
+          <IconButton onClick={() => handleRemove(id)}>
+            <DeleteIcon />
+          </IconButton>
+        );
+      },
+    },
   ];
 
   const handleAddClick = () => {
@@ -90,6 +105,17 @@ function Jobs({ personnelid }) {
 
     } catch (error) {
       enqueueSnackbar("Nhân viên đang làm tại đây!", { variant: "error" });
+    }
+  };
+
+  const handleRemove = async (id) => {
+    try {
+      await jobApi.remove(id);
+      enqueueSnackbar("Xóa thành công", { variant: "success" });
+      setMode("");
+      setRefreshKey((state) => state + 1);
+    } catch (error) {
+      enqueueSnackbar("Lỗi", { variant: "error" });
     }
   };
   return (

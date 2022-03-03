@@ -54,12 +54,13 @@ function ChangePwdForm(props) {
   const schema = yup.object().shape({
     password: yup.string().required("Chưa nhập Email hoặc Tên tài khoản!"),
     newpwd: yup.string().required("Chưa nhập mật khẩu!").min(6, 'Mật khẩu phải lớn hơn 6 ký tự!'),
-    confirmPwd: yup.string().required("Chưa xác nhận mật khẩu!").oneOf([yup.ref('password')], 'Mật khẩu xác nhận chưa đúng!'),
+    confirmPwd: yup.string().required("Chưa xác nhận mật khẩu!").oneOf([yup.ref('newpwd')], 'Mật khẩu xác nhận chưa đúng!'),
   });
   const form = useForm({
     defaultValues: {
-      identifier: "",
       password: "",
+      newpwd:"",
+      confirmPwd:""
     },
     reValidateMode: "onSubmit",
 

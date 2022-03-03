@@ -1,9 +1,9 @@
-import { Box, Button, Grid, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Box, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { personnelApi } from "api";
+import React, { useEffect, useState } from "react";
 import Detail from "./Detail";
 import UpdateForm from "./UpdateForm";
-import { personnelApi } from "api";
 
 const useStyles = makeStyles({
   root: {
@@ -27,7 +27,6 @@ function BasicInformation({ personnelid }) {
       try {
         const result = await personnelApi.get(personnelid);
         setPersonnel(result.results);
-        console.log(result);
       } catch (error) {}
     })();
   }, [personnelid]);

@@ -10,7 +10,7 @@ function ManageAccount(props) {
   return (
       <Routes>
         <Route path='/' element={<OverViewPage/>}></Route>
-        <Route path='/add' element={<CreateAccountPage/>}></Route>
+        <Route path='/them' element={<CreateAccountPage/>}></Route>
         <Route path='/:accountid' element={<DetailPage/>}></Route>
         <Route element={<NotFound/>}></Route>
       </Routes>

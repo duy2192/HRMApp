@@ -1,10 +1,13 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { DataGrid } from "@mui/x-data-grid";
 import { contractApi } from "api";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import AddForm from "./AddForm";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Detail from "./Detail";
+
 const useStyles = makeStyles({
   root: {
     "& .MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
@@ -23,17 +26,22 @@ const useStyles = makeStyles({
 function Contract({ personnelid }) {
   const classes = useStyles();
   const [contract, setContract] = useState([]);
+  const [currentContract, setCurrentContract] = useState({});
   const [mode, setMode] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
+  const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  
   useEffect(() => {
     (async () => {
       try {
-        const result = await contractApi.get(personnelid);
+        setLoading(true);
+        const result = await contractApi.getAll(personnelid);
         setContract(result.results);
+        setLoading(false);
       } catch (error) {}
     })();
-  }, [personnelid,refreshKey]);
+  }, [personnelid, refreshKey]);
   const columns = [
     { field: "id", headerName: "ID", width: 80, type: "number" },
     { field: "loaihd", headerName: "Loại hợp đồng", width: 250 },
@@ -62,9 +70,28 @@ function Contract({ personnelid }) {
         );
       },
     },
+    {
+      field: "action",
+      headerName: "",
+      width: 50,
+      type: "number",
+      renderCell: (e) => {
+        const id = e.row.id;
+        return (
+          <IconButton onClick={() => handleRemove(id)}>
+            <DeleteIcon />
+          </IconButton>
+        );
+      },
+    },
   ];
   const handleAddClick = () => {
     setMode("add");
+  };
+  const handleDetailClick = (e) => {
+
+    setMode("detail");
+    setCurrentContract(e.id)
   };
   const handleAddContract = async (value) => {
     try {
@@ -75,7 +102,18 @@ function Contract({ personnelid }) {
       await contractApi.create(data);
       enqueueSnackbar("Thêm hợp đồng thành công", { variant: "success" });
       setMode("");
-      setRefreshKey(state => state+1);
+      setRefreshKey((state) => state + 1);
+    } catch (error) {
+      enqueueSnackbar("Lỗi", { variant: "error" });
+    }
+  };
+
+  const handleRemove = async (id) => {
+    try {
+      await contractApi.remove(id);
+      enqueueSnackbar("Xóa hợp đồng thành công", { variant: "success" });
+      setMode("");
+      setRefreshKey((state) => state + 1);
     } catch (error) {
       enqueueSnackbar("Lỗi", { variant: "error" });
     }
@@ -108,14 +146,15 @@ function Contract({ personnelid }) {
               // rowCount={pagination.total}
               pagination
               paginationMode="server"
-              // loading={loading}
+              loading={loading}
               className={classes.dataGrid}
               hideFooterSelectedRowCount
-              // onRowDoubleClick={handleOnClick}
+              onRowDoubleClick={handleDetailClick}
             />
           </>
         )}
         {mode === "add" && <AddForm onSubmit={handleAddContract} />}
+        {mode === "detail" && <Detail contractid={currentContract} />}
       </Box>
     </>
   );
