@@ -40,12 +40,24 @@ function UpdateForm({ onSubmit, personnel }) {
   const schema = yup.object().shape({
     email: yup
       .string()
+      .trim()
       .email("Sai định dạng email!")
       .required("Chưa nhập email!"),
-    sdt: yup.string().required("Chưa nhập số điện thoại!"),
+    sdt: yup
+      .number()
+      .typeError("Sai số điện thoại")
+      .required("Chưa nhập số điện thoại!")
+      .test("tel", "Không hợp lệ", (value) => Number.parseInt(value) > 0),
     tp: yup.string().required("Chưa chọn Tỉnh/TP!"),
     quan: yup.string().required("Chưa chọn Quận/Huyện!"),
     phuong: yup.string().required("Chưa chọn Phường/Xã!"),
+    diachi: yup
+      .string()
+      .trim()
+      .matches(
+        /^$|[a-zA-Z0-9_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+        "Không hợp lệ!"
+      ),
   });
 
   const form = useForm({
@@ -95,29 +107,29 @@ function UpdateForm({ onSubmit, personnel }) {
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Email </p>
+              <p className="label">
+                Email <span className="text-danger">*</span>
+              </p>
             </div>
             <div className="col-md-6">
-              <InputField size="small" label="Email" name="email" form={form} />
+              <InputField size="small" name="email" form={form} />
             </div>
           </div>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Số điện thoại </p>
+              <p className="label">
+                Số điện thoại <span className="text-danger">*</span>
+              </p>
             </div>
             <div className="col-md-6">
-              <InputField
-                size="small"
-                label="Số điện thoại"
-                name="sdt"
-                form={form}
-                type="number"
-              />
+              <InputField size="small" name="sdt" form={form} type="number" />
             </div>
           </div>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Tỉnh/TP</p>
+              <p className="label">
+                Tỉnh/TP <span className="text-danger">*</span>
+              </p>
             </div>
             <div className="col-md-6">
               <SelectField
@@ -130,7 +142,9 @@ function UpdateForm({ onSubmit, personnel }) {
           </div>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Quận/Huyện </p>
+              <p className="label">
+                Quận/Huyện <span className="text-danger">*</span>
+              </p>
             </div>
             <div className="col-md-6">
               <SelectField
@@ -143,7 +157,9 @@ function UpdateForm({ onSubmit, personnel }) {
           </div>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Phường/Xã </p>
+              <p className="label">
+                Phường/Xã <span className="text-danger">*</span>
+              </p>
             </div>
             <div className="col-md-6">
               <SelectField data={wardList} name="phuong" form={form} />
@@ -154,12 +170,7 @@ function UpdateForm({ onSubmit, personnel }) {
               <p className="label">Địa chỉ </p>
             </div>
             <div className="col-md-6">
-              <InputField
-                size="small"
-                label="Địa chỉ "
-                name="diachi"
-                form={form}
-              />
+              <InputField size="small" name="diachi" form={form} />
             </div>
           </div>
           <Box className={classes.submit}>

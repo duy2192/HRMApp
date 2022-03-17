@@ -7,6 +7,8 @@ import ConfirmBox from "components/ConfirmBox";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import AddForm from "./AddForm";
+import {convertTime} from "utils"
+
 const useStyles = makeStyles({
   root: {
     "& .MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
@@ -51,12 +53,20 @@ export default function Level({ personnelid }) {
       field: "tungay",
       headerName: "Từ ngày",
       width: 150,
+      renderCell: (e) => {
+        const date = e.row.lv.tungay;
+        return <Typography>{convertTime( date)}</Typography>;
+      },    
     },
     {
       field: "denngay",
       headerName: "Đến ngày",
       type: "string",
       width: 150,
+      renderCell: (e) => {
+        const date = e.row.lv.denngay;
+        return <Typography>{convertTime( date)}</Typography>;
+      },    
     },
     {
       field: "ketqua",

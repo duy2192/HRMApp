@@ -43,6 +43,7 @@ function AddForm({ onSubmit }) {
 
   const schema = yup.object().shape({
     cv: yup.string().required("Chưa chọn Chức vụ"),
+    ngaybonhiem:yup.date().typeError("Ngày không hợp lệ")
   });
 
   const form = useForm({
@@ -71,7 +72,7 @@ function AddForm({ onSubmit }) {
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Chức vụ </p>
+              <p className="label">Chức vụ <span className="text-danger">*</span></p>
             </div>
             <div className="col-md-6">
               <SelectField data={positionList} name="cv" form={form} />{" "}
@@ -79,12 +80,11 @@ function AddForm({ onSubmit }) {
           </div>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Ngày bổ nhiệm </p>
+              <p className="label">Ngày bổ nhiệm <span className="text-danger">*</span></p>
             </div>
             <div className="col-md-6">
               <CalendarField
                 name="ngaybonhiem"
-                label="Ngày bổ nhiệm"
                 form={form}
                 size="small"
               />
@@ -97,10 +97,9 @@ function AddForm({ onSubmit }) {
             <div className="col-md-6">
               <InputField
                 size="small"
-                label="Ghi chú"
                 name="ghichu"
                 form={form}
-              />{" "}
+              />
             </div>
           </div>
 

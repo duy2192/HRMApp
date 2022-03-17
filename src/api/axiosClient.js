@@ -2,7 +2,8 @@ import axios from 'axios';
 import fileDownload from 'js-file-download'
 
 const axiosClient = axios.create({
-  baseURL: `${process.env.REACT_APP_SERVER_HOST}api`,
+  // baseURL: `${process.env.REACT_APP_SERVER_HOST}api`,
+  baseURL: `http://localhost:8080/api`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -12,7 +13,8 @@ axiosClient.interceptors.request.use(
   function (config) {
     const token = localStorage.getItem('access-token');
     config.headers['access-token'] =  token ||'';   
-    const URLs = ['download'];
+    const URLs = ['download','statistical'];
+    
     if (URLs.includes(config.url.split("/")[1])) {
     config.responseType="blob"
     }
@@ -30,10 +32,13 @@ axiosClient.interceptors.response.use(
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     const { config, data  } = response;
-
-    const urlDownload = ['download'];
+    const urlDownload = ['download','statistical'];
     if (urlDownload.includes(config.url.split("/")[1])) {
+      if(config.url.split("/")[1]===urlDownload[0])
       fileDownload(data,config.url.split("/")[2]);
+      if(config.url.split("/")[1]===urlDownload[1]){
+        fileDownload(data,"Report.xlsx");
+      }
     }
     return response.data;
   },
@@ -47,8 +52,9 @@ axiosClient.interceptors.response.use(
       const error = data.message || {};
       throw new Error(error);
     }
+    throw new Error(data.message);
 
-    return Promise.reject(error);
+    return Promise.reject(data.message);
   }
 );
 

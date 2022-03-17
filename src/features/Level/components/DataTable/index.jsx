@@ -1,10 +1,13 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { DataGrid } from "@mui/x-data-grid";
 import { levelApi } from "api";
 import SearchBox from "components/SearchBox";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AddLevel from "../AddLevel";
+import UpdateLevel from "../UpdateLevel";
+import EditIcon from '@mui/icons-material/Edit';
 
 const useStyles = makeStyles({
   root: {
@@ -28,6 +31,10 @@ export default function DataTable() {
   const [page, setPage] = React.useState(1);
   const [loading, setLoading] = React.useState(false);
   const classes = useStyles();
+  const [openFormAdd, setOpenFormAdd] = React.useState(false);
+  const [openUpdateForm, setOpenUpdateForm] = React.useState(false);
+  const [levelDetail, setLevelDetail] = React.useState({});
+  const [refreshKey, setRefreshKey] = React.useState(0);
 
   const queryParams = useMemo(() => {
     return {
@@ -55,10 +62,10 @@ export default function DataTable() {
         console.log(error);
       }
     })();
-  }, [queryParams, searchKey]);
+  }, [queryParams, searchKey, refreshKey]);
   const columns = [
     { field: "id", headerName: "ID", width: 80, type: "number" },
-    { field: "ten", headerName: "Họ Tên", width: 250 },
+    { field: "ten", headerName: "Tên", width: 250 },
     // {
     //   field: "diachi",
     //   headerName: "Địa chỉ",
@@ -73,16 +80,47 @@ export default function DataTable() {
         return <Typography>{count}</Typography>;
       },
     },
+    {
+      field: 'update',
+      headerName: 'Cập nhật',
+      sortable: false,
+      renderCell: (e) => {
+        const handleOnClick = () => {
+          setOpenUpdateForm(true);
+          setLevelDetail(e.row);
+        };
+        return (
+          <IconButton onClick={handleOnClick}>
+            <EditIcon />
+          </IconButton>
+        );
+      },
+    },
   ];
   const handlePageChange = (page) => {
     setPage(page + 1);
   };
   const handleAddClick = () => {
-    navigate("/don-vi/them");
+    setOpenFormAdd(true);
+  };
+  const handleClose = (e, r) => {
+    if (r !== "backdropClick") {
+      setOpenFormAdd(false);
+      setOpenUpdateForm(false);
+      setLevelDetail({});
+      setRefreshKey(refreshKey + 1);
+    }
   };
   return (
     <Box className={classes.root}>
-      <Box style={{ paddingLeft: "25px", paddingTop: "10px",display:"flex",justifyContent:"space-between" }}>
+      <Box
+        style={{
+          paddingLeft: "25px",
+          paddingTop: "10px",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
         <SearchBox handleSearchBox={handleSearchBox} />
 
         <Button
@@ -96,7 +134,7 @@ export default function DataTable() {
             display: "inline",
           }}
         >
-          Thêm đơn vị
+          Thêm trình độ
         </Button>
       </Box>
 
@@ -114,6 +152,12 @@ export default function DataTable() {
         className={classes.dataGrid}
         hideFooterSelectedRowCount
         onRowDoubleClick={handleOnClick}
+      />
+      <AddLevel open={openFormAdd} handleClose={handleClose} />
+      <UpdateLevel
+        open={openUpdateForm}
+        handleClose={handleClose}
+        level={levelDetail}
       />
     </Box>
   );

@@ -6,13 +6,15 @@ import { makeStyles } from "@mui/styles";
 import Stack from "@mui/material/Stack";
 import * as React from "react";
 import { Controller } from "react-hook-form";
+import FormHelperText from "@mui/material/FormHelperText";
+
 const useStyles = makeStyles({
   input: {
     background: "#fff",
     zIndex: "0",
   },
 });
-export default function CalendarField({ label, form, name,size }) {
+export default function CalendarField({ label, form, name, size }) {
   const classes = useStyles();
 
   return (
@@ -31,7 +33,27 @@ export default function CalendarField({ label, form, name,size }) {
               value={value}
               onChange={onChange}
               renderInput={(params) => (
-                <TextField className={classes.input} size={size} fullWidth {...params} />
+                <>
+                <TextField
+                  className={classes.input}
+                  size={size}
+                  fullWidth
+                  {...params}
+                  sx={
+                    !label
+                      ? {
+                          "& legend": { display: "none" },
+                          "& fieldset": { top: 0 },
+                        }
+                      : {}
+                  }
+                />
+                <FormHelperText
+                style={{ color: "red", fontWeight: "bold" }}
+                error={invalid}
+              >
+                {error?.message}
+              </FormHelperText></>
               )}
             />
           </Stack>

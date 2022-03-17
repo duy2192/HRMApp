@@ -44,7 +44,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 function SearchBox({handleSearchBox}) {
   const handleOnchange=(e)=>{
     if(!handleSearchBox) return
-    handleSearchBox(e.target.value)
+    handleSearchBox(e.target.value.trim())
   }
   return (
     <Search onChange={handleOnchange}>

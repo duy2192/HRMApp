@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from "@mui/material";
 import React from "react";
 import { makeStyles } from "@mui/styles";
-
+import {convertTime} from "utils"
 const useStyles = makeStyles({
   root: {
     overflowY: "scroll",
@@ -21,12 +21,11 @@ const useStyles = makeStyles({
 });
 function Detail({ personnel }) {
   const classes = useStyles();
-  console.log(personnel);
   return (
       <Box className={classes.root} >
         <Grid container>
           <Grid item lg={2} md={6} sm={5} xs={6}>
-            <Typography component="p" variant="body2" className={classes.label}>Mã nhân viên:</Typography>
+            <Typography component="p" variant="body2" className={classes.label}>Mã nhân viên: </Typography>
           </Grid>
           <Grid item lg={4} md={6} sm={7} xs={6}>
             <Typography component="p" variant="body2" className={classes.info}>{personnel.id}</Typography>
@@ -47,7 +46,7 @@ function Detail({ personnel }) {
             <Typography component="p" variant="body2" className={classes.label}>Ngày sinh:</Typography>
           </Grid>
           <Grid item lg={4} md={6} sm={7} xs={6}>
-            <Typography component="p" variant="body2" className={classes.info}>{personnel.ngaysinh}</Typography>
+            <Typography component="p" variant="body2" className={classes.info}>{convertTime( personnel.ngaysinh)}</Typography>
           </Grid>
           <Grid item lg={2} md={6} sm={5} xs={6}>
             <Typography component="p" variant="body2" className={classes.label}>Dân tộc:</Typography>
@@ -77,7 +76,7 @@ function Detail({ personnel }) {
             <Typography component="p" variant="body2" className={classes.label}>Ngày cấp:</Typography>
           </Grid>
           <Grid item lg={4} md={6} sm={7} xs={6}>
-            <Typography component="p" variant="body2" className={classes.info}>{personnel.ngaycap}</Typography>
+            <Typography component="p" variant="body2" className={classes.info}>{convertTime(personnel.ngaycap)}</Typography>
           </Grid>
           <Grid item lg={2} md={6} sm={5} xs={6}>
             <Typography component="p" variant="body2" className={classes.label}>Nơi cấp:</Typography>

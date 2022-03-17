@@ -44,16 +44,38 @@ function CreateAccountForm(props) {
   const schema = yup.object().shape({
     email: yup
       .string()
-      .email("Sai định dạng email!")
-      .required("Chưa nhập Email!"),
-    name: yup.string().required("Nhập tên người đăng ký!"),
-    role: yup.number().typeError("Chưa chọn vai trò!").required("Chưa chọn vai trò!"),
+      .trim()
+      .required("Chưa nhập Email!")
+      .email("Sai định dạng email!"),
+    name: yup
+      .string()
+      .trim()
+      .required("Chưa nhập tên người đăng ký!")
+
+      .matches(
+        /^[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+        "Sai định dạng!"
+      ),
+    username: yup
+      .string()
+      .trim()
+      .required("Chưa nhập tên người đăng ký!")
+
+      .matches(
+        /^[a-zA-Z\s]+$/,
+        "Sai định dạng!"
+      ),
+    role: yup
+      .number()
+      .required("Chưa chọn vai trò!")
+      .typeError("Chưa chọn vai trò!"),
   });
   const form = useForm({
     defaultValues: {
       email: "",
       name: "",
       role: "",
+      username:""
     },
     reValidateMode: "onSubmit",
 
@@ -78,6 +100,12 @@ function CreateAccountForm(props) {
         <InputField
           name="name"
           label="Họ tên"
+          form={form}
+          disabled={isSubmitting}
+        />
+        <InputField
+          name="username"
+          label="Tên tài khoản"
           form={form}
           disabled={isSubmitting}
         />

@@ -10,6 +10,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { convertMySqlTime } from "utils/convertTime";
 import * as yup from "yup";
+import { isDateBeforeToday } from "utils";
 
 const useStyles = makeStyles({
   root: {
@@ -31,10 +32,70 @@ function UpdateForm({ onSubmit, personnel }) {
   const classes = useStyles();
 
   const schema = yup.object().shape({
-    ten: yup.string().required("Chưa nhập tên"),
-    gioitinh: yup.string().required("Chưa chọn giới tính!"),
-    cccd: yup.string().required("Chưa nhập CMND/CCCD"),
-  });
+    ten: yup
+      .string()
+      .trim()
+      .required("Chưa nhập họ tên")
+      .matches(
+        /^[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+
+        "Không hợp lệ"
+      )
+      ,
+    gioitinh: yup.string().trim().required("Chưa chọn giới tính!"),
+    cccd: yup
+      .number()
+      .typeError("Sai CMND/CCCD")
+      .required("Chưa nhập CMND/CCCD"),
+    nguyenquan: yup
+      .string()
+      .trim()
+      .matches(
+        /^$|[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+
+        "Không hợp lệ!"
+      ),
+    noicap: yup
+      .string()
+      .trim()
+      .required("Chưa nhập nơi cấp")
+      .matches(
+        /^[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+
+        "Không hợp lệ!"
+      ),
+    quoctich: yup
+      .string()
+      .trim()
+      .matches(
+        /^$|[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+
+        "Không hợp lệ!"
+      )
+      ,
+    dantoc: yup
+      .string()
+      .trim()
+      .matches(
+        /^$|[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+
+        "Không hợp lệ!"
+      ),
+    tongiao: yup
+      .string()
+      .trim()
+      .matches(
+        /^$|[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+
+        "Không hợp lệ!"
+      ),
+      ngaysinh: yup
+      .string()
+      .trim()
+      .required("Chưa nhập ngày sinh!")
+      .test("checkBirthday", "Ngày sinh không hợp lệ!", (value) => {
+        return isDateBeforeToday(value);
+      }),  });
 
   const form = useForm({
     defaultValues: {
@@ -44,11 +105,10 @@ function UpdateForm({ onSubmit, personnel }) {
       nguyenquan: personnel.nguyenquan,
       dantoc: personnel.dantoc,
       tongiao: personnel.tongiao,
-      quoctich: personnel.quoctich,
+      quoctich: personnel.quoctich || "",
       cccd: personnel.cccd,
       ngaycap: personnel.ngaycap,
       noicap: personnel.noicap,
-
     },
     reValidateMode: "onSubmit",
     resolver: yupResolver(schema),
@@ -62,7 +122,6 @@ function UpdateForm({ onSubmit, personnel }) {
       ngaycap: convertMySqlTime(value.ngaycap),
     };
     onSubmit(data);
-    // form.reset();
   };
 
   const { isSubmitting } = form.formState;
@@ -77,12 +136,14 @@ function UpdateForm({ onSubmit, personnel }) {
               </p>
             </div>
             <div className="col-md-6">
-              <InputField label="Họ tên" size="small" name="ten" form={form} />
+              <InputField size="small" name="ten" form={form} />
             </div>
           </div>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Giới tính</p>
+              <p className="label">
+                Giới tính <span className="text-danger">*</span>
+              </p>
             </div>
             <div className="col-md-6">
               <SelectField data={gender} name="gioitinh" form={form} />
@@ -90,15 +151,12 @@ function UpdateForm({ onSubmit, personnel }) {
           </div>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Ngày sinh </p>
+              <p className="label">
+                Ngày sinh <span className="text-danger">*</span>
+              </p>
             </div>
             <div className="col-md-6">
-              <CalendarField
-                name="ngaysinh"
-                label="Ngày sinh"
-                form={form}
-                size="small"
-              />
+              <CalendarField name="ngaysinh" form={form} size="small" />
             </div>
           </div>
           <div className="row pt-1">
@@ -106,12 +164,7 @@ function UpdateForm({ onSubmit, personnel }) {
               <p className="label">Nguyên quán </p>
             </div>
             <div className="col-md-6">
-              <InputField
-                size="small"
-                label="Nguyên quán"
-                name="nguyenquan"
-                form={form}
-              />
+              <InputField size="small" name="nguyenquan" form={form} />
             </div>
           </div>
           <div className="row pt-1">
@@ -119,12 +172,7 @@ function UpdateForm({ onSubmit, personnel }) {
               <p className="label">Dân tộc </p>
             </div>
             <div className="col-md-6">
-              <InputField
-                label="Dân tộc"
-                size="small"
-                name="dantoc"
-                form={form}
-              />
+              <InputField size="small" name="dantoc" form={form} />
             </div>
           </div>
           <div className="row pt-1">
@@ -132,12 +180,7 @@ function UpdateForm({ onSubmit, personnel }) {
               <p className="label">Tôn giáo </p>
             </div>
             <div className="col-md-6">
-              <InputField
-                size="small"
-                label="Tôn giáo"
-                name="tongiao"
-                form={form}
-              />
+              <InputField size="small" name="tongiao" form={form} />
             </div>
           </div>
           <div className="row pt-1">
@@ -145,12 +188,7 @@ function UpdateForm({ onSubmit, personnel }) {
               <p className="label">Quốc tịch</p>
             </div>
             <div className="col-md-6">
-              <InputField
-                size="small"
-                label="Quốc tịch"
-                name="quoctich"
-                form={form}
-              />
+              <InputField size="small" name="quoctich" form={form} />
             </div>
           </div>
           <div className="row pt-1">
@@ -160,39 +198,27 @@ function UpdateForm({ onSubmit, personnel }) {
               </p>
             </div>
             <div className="col-md-6">
-              <InputField
-                size="small"
-                label="Số CMND / CCCD"
-                name="cccd"
-                form={form}
-                type="number"
-              />
+              <InputField size="small" name="cccd" form={form} type="number" />
             </div>
           </div>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Ngày cấp</p>
+              <p className="label">
+                Ngày cấp <span className="text-danger">*</span>
+              </p>
             </div>
             <div className="col-md-6">
-              <CalendarField
-                name="ngaycap"
-                label="Ngày cấp"
-                form={form}
-                size="small"
-              />
+              <CalendarField name="ngaycap" form={form} size="small" />
             </div>
           </div>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Nơi cấp </p>
+              <p className="label">
+                Nơi cấp <span className="text-danger">*</span>
+              </p>
             </div>
             <div className="col-md-6">
-              <InputField
-                size="small"
-                label="Nơi cấp"
-                name="noicap"
-                form={form}
-              />
+              <InputField size="small" name="noicap" form={form} />
             </div>
           </div>
           <Box className={classes.submit}>

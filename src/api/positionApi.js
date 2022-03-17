@@ -1,9 +1,9 @@
 import axiosClient from './axiosClient';
 
 export const positionApi = {
-   getAll() {
+   getAll(params) {
     const url = '/position';
-    return axiosClient.get(url);
+    return axiosClient.get(url,{params});
   },
    get(id) {
     const url = `/position/${id}`;

@@ -24,9 +24,13 @@ const useStyles = makeStyles({
 function AddForm({ onSubmit }) {
   const classes = useStyles();
   const schema = yup.object().shape({
-    ngayqd: yup.string().required("Chưa ngày quyết định"),
-    hinhthuc: yup.string().required("Chưa hình thức"),
-    noidung: yup.string().required("Chưa nhập nội dung"),
+    ngayqd: yup.string().required("Chưa ngày quyết định").typeError("Ngày không hợp lệ")
+    ,
+    hinhthuc: yup.string().trim().required("Chưa hình thức").matches(
+      /^$|^([a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+\s)*[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+$/,
+      "Không hợp lệ!"
+    ),
+    noidung: yup.string().trim().required("Chưa nhập nội dung"),
   });
 
   const form = useForm({
@@ -45,7 +49,7 @@ function AddForm({ onSubmit }) {
       ngayqd: convertMySqlTime(value.ngayqd),
     };
     onSubmit(data);
-    // form.reset();
+    form.reset();
   };
 
   const { isSubmitting } = form.formState;
@@ -55,12 +59,11 @@ function AddForm({ onSubmit }) {
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Ngày quyết định </p>
+              <p className="label">Ngày quyết định <span className="text-danger">*</span></p>
             </div>
             <div className="col-md-6">
             <CalendarField
                 name="ngayqd"
-                label="Ngày quyết định"
                 form={form}
                 size="small"
               />            </div>
@@ -72,7 +75,6 @@ function AddForm({ onSubmit }) {
             <div className="col-md-6">
             <InputField
                 size="small"
-                label="Hình thức"
                 name="hinhthuc"
                 form={form}
               />
@@ -85,7 +87,6 @@ function AddForm({ onSubmit }) {
             <div className="col-md-6">
               <InputField
                 size="small"
-                label="Nội dung"
                 name="noidung"
                 form={form}
               />

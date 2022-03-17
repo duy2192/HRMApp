@@ -6,6 +6,8 @@ import NotFound from "components/NotFound"
 function DetailPage(props) {
   const { accountid } = useParams();
   const [account, setAccount] = useState({});
+  
+
   useEffect(() => {
     (async () => {
       try {
@@ -16,6 +18,7 @@ function DetailPage(props) {
       }
     })();
   }, [accountid]);
+
   return <>{account ? <Account account={account} /> : <NotFound/>}</>;
 }
 

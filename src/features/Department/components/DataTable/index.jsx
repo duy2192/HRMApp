@@ -1,10 +1,13 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography,IconButton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { DataGrid } from "@mui/x-data-grid";
 import { departmentApi } from "api";
 import SearchBox from "components/SearchBox";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AddDepartment from "../AddDepartment";
+import UpdateDepartment from "../UpdateDepartment";
+import EditIcon from '@mui/icons-material/Edit';
 
 const useStyles = makeStyles({
   root: {
@@ -28,6 +31,10 @@ export default function DataTable() {
   const [page, setPage] = React.useState(1);
   const [loading, setLoading] = React.useState(false);
   const classes = useStyles();
+  const [openFormAdd, setOpenFormAdd] = React.useState(false);
+  const [departmentDetail, setDepartmentDetail] = React.useState({});
+  const [openUpdateForm, setOpenUpdateForm] = React.useState(false);
+  const [refreshKey, setRefreshKey] = React.useState({});
 
   const queryParams = useMemo(() => {
     return {
@@ -55,15 +62,15 @@ export default function DataTable() {
         console.log(error);
       }
     })();
-  }, [queryParams, searchKey]);
+  }, [queryParams, searchKey,refreshKey]);
   const columns = [
     { field: "id", headerName: "ID", width: 80, type: "number" },
     { field: "ten", headerName: "Họ Tên", width: 250 },
-    {
-      field: "diachi",
-      headerName: "Địa chỉ",
-      width: 350,
-    },
+    // {
+    //   field: "diachi",
+    //   headerName: "Địa chỉ",
+    //   width: 350,
+    // },
     {
       field: "nv",
       headerName: "Số lượng nhân viên",
@@ -73,12 +80,36 @@ export default function DataTable() {
         return <Typography>{count}</Typography>;
       },
     },
+    {
+      field: 'update',
+      headerName: 'Cập nhật',
+      sortable: false,
+      renderCell: (e) => {
+        const handleOnClick = () => {
+          setOpenUpdateForm(true);
+          setDepartmentDetail(e.row);
+        };
+        return (
+          <IconButton onClick={handleOnClick}>
+            <EditIcon />
+          </IconButton>
+        );
+      },
+    },
   ];
   const handlePageChange = (page) => {
     setPage(page + 1);
   };
   const handleAddClick = () => {
-    navigate("/don-vi/them");
+    setOpenFormAdd(true)
+  };
+  const handleClose = (e,r) => {
+    if (r !== 'backdropClick') {
+      setOpenFormAdd(false);
+      setOpenUpdateForm(false);
+      setDepartmentDetail({})
+      setRefreshKey(refreshKey+1)
+    }
   };
   return (
     <Box className={classes.root}>
@@ -114,6 +145,12 @@ export default function DataTable() {
         className={classes.dataGrid}
         hideFooterSelectedRowCount
         onRowDoubleClick={handleOnClick}
+      />
+            <AddDepartment open={openFormAdd} handleClose={handleClose}/>
+            <UpdateDepartment
+        open={openUpdateForm}
+        handleClose={handleClose}
+        department={departmentDetail}
       />
     </Box>
   );

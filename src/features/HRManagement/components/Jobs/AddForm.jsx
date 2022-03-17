@@ -3,7 +3,7 @@ import { Button } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { makeStyles } from "@mui/styles";
 import { Box } from "@mui/system";
-import { departmentApi } from "api";
+import { departmentApi,positionApi } from "api";
 import CalendarField from "components/FormControl/CalendarField";
 import InputField from "components/FormControl/InputField";
 import SelectField from "components/FormControl/SelectField";
@@ -26,13 +26,20 @@ const useStyles = makeStyles({
 function AddForm({ onSubmit }) {
   const classes = useStyles();
   const [depList, setDepartmentList] = useState([]);
+  const [posList, setPositionList] = useState([]);
 
   useEffect(() => {
     (async () => {
       try {
-        const result = await departmentApi.getAll();
+        const [dep,pos] = await Promise.all([ departmentApi.getAll(),positionApi.getAll()]);
         setDepartmentList(
-          result.results.map((item) => ({
+          dep.results.map((item) => ({
+            value: item.id,
+            label: item.ten,
+          }))
+        );
+        setPositionList(
+          pos.results.map((item) => ({
             value: item.id,
             label: item.ten,
           }))
@@ -43,7 +50,8 @@ function AddForm({ onSubmit }) {
 
   const schema = yup.object().shape({
     dv: yup.string().required("Chưa chọn Chức vụ"),
-    ngaybatdau: yup.string().required("Chưa chọn đơn vị"),
+    cv: yup.string().required("Chưa chọn "),
+    ngaybatdau: yup.date().required("Chưa chọn ngày bắt đầu làm việc").typeError("Ngày không hợp lệ"),
   });
 
   const form = useForm({
@@ -66,13 +74,14 @@ function AddForm({ onSubmit }) {
   };
 
   const { isSubmitting } = form.formState;
+
   return (
     <>
       <Box className={classes.root}>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Đơn vị </p>
+              <p className="label">Đơn vị <span className="text-danger">*</span></p>
             </div>
             <div className="col-md-6">
               <SelectField data={depList} name="dv" form={form} />{" "}
@@ -80,7 +89,15 @@ function AddForm({ onSubmit }) {
           </div>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Ngày bắt đầu </p>
+              <p className="label">Chức vụ <span className="text-danger">*</span></p>
+            </div>
+            <div className="col-md-6">
+              <SelectField data={posList} name="cv" form={form} />{" "}
+            </div>
+          </div>
+          <div className="row pt-1">
+            <div className="col-md-4">
+              <p className="label">Ngày bắt đầu <span className="text-danger">*</span></p>
             </div>
             <div className="col-md-6">
               <CalendarField
@@ -98,7 +115,6 @@ function AddForm({ onSubmit }) {
             <div className="col-md-6">
               <InputField
                 size="small"
-                label="Ghi chú"
                 name="ghichu"
                 form={form}
               />{" "}

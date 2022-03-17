@@ -31,7 +31,14 @@ function AddForm({ onSubmit }) {
   const [file, setFile] = useState("");
 
   const schema = yup.object().shape({
-    loaihd: yup.string().required("Chưa chọn loại hợp đồng"),
+    loaihd: yup.string().trim().required("Chưa chọn loại hợp đồng"),
+    ngayky: yup
+    .date()
+    .max(
+      yup.ref("ngaykt"),
+      "Giá trị từ ngày không thể lớn hơn giá trị đến ngày"
+    ).typeError("Ngày không hợp lệ"),
+    ngaykt: yup.date().typeError("Ngày không hợp lệ"),
   });
 
   const form = useForm({
@@ -53,7 +60,7 @@ function AddForm({ onSubmit }) {
       file,
     };
     onSubmit(data);
-    // form.reset();
+    form.reset();
   };
   const handleUpload = async (e) => {
     try {
@@ -76,7 +83,7 @@ function AddForm({ onSubmit }) {
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Loại hợp đồng </p>
+              <p className="label">Loại hợp đồng <span className="text-danger">*</span></p>
             </div>
             <div className="col-md-6">
               <SelectField data={CONTRACT_TYPES} name="loaihd" form={form} />
@@ -84,7 +91,7 @@ function AddForm({ onSubmit }) {
           </div>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Ngày ký </p>
+              <p className="label">Ngày ký <span className="text-danger">*</span></p>
             </div>
             <div className="col-md-6">
               <CalendarField
@@ -97,7 +104,7 @@ function AddForm({ onSubmit }) {
           </div>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Ngày kết thúc</p>
+              <p className="label">Ngày kết thúc <span className="text-danger">*</span></p>
             </div>
             <div className="col-md-6">
               <CalendarField

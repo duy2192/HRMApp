@@ -4,9 +4,8 @@ import UserInfo from "../components/UserInfo";
 
 function Detail(props) {
   const loggedInUser = useSelector((state) => state.user.current);
-
   return <>
-  <UserInfo user={loggedInUser.user}/>
+  <UserInfo id={loggedInUser?.user?.id}/>
   </>;
 }
 

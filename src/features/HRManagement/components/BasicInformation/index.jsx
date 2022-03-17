@@ -4,6 +4,7 @@ import { personnelApi } from "api";
 import React, { useEffect, useState } from "react";
 import Detail from "./Detail";
 import UpdateForm from "./UpdateForm";
+import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles({
   root: {
@@ -21,6 +22,8 @@ function BasicInformation({ personnelid }) {
   const classes = useStyles();
   const [mode, setMode] = useState("");
   const [personnel, setPersonnel] = useState({});
+  const { enqueueSnackbar } = useSnackbar();
+  const [refreshKey, setRefreshKey] = React.useState(0);
 
   useEffect(() => {
     (async () => {
@@ -29,7 +32,7 @@ function BasicInformation({ personnelid }) {
         setPersonnel(result.results);
       } catch (error) {}
     })();
-  }, [personnelid]);
+  }, [personnelid,refreshKey]);
   const handleSubmitUpdate = async (value) => {
     try {
       const data = {
@@ -37,11 +40,13 @@ function BasicInformation({ personnelid }) {
         id: personnel.id,
       };
       const result = await personnelApi.update(data);
-      setPersonnel(result.results);
+      // setPersonnel(result.results);
+      setRefreshKey(refreshKey+1)
+      enqueueSnackbar("Cập nhật hồ sơ thành công", { variant: "success" });
 
       setMode("");
     } catch (error) {
-      console.log(error);
+      enqueueSnackbar("Cập nhật hồ sơ thất bại", { variant: "error" });
     }
   };
   const handleUpdateClick = () => {

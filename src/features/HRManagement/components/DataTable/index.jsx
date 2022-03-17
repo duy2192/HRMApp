@@ -32,7 +32,7 @@ export default function DataTable() {
   const queryParams = useMemo(() => {
     return {
       _page: page,
-      _limit: 16,
+      _limit: 10,
       search: searchKey,
     };
   }, [page, searchKey]);
@@ -56,6 +56,7 @@ export default function DataTable() {
       }
     })();
   }, [queryParams, searchKey]);
+  
   const columns = [
     { field: "id", headerName: "ID", width: 80, type: "number" },
     { field: "ten", headerName: "Họ Tên", width: 250 },
@@ -127,6 +128,7 @@ export default function DataTable() {
         hideFooterSelectedRowCount
         onRowDoubleClick={handleOnClick}
       />
+      
     </Box>
   );
 }

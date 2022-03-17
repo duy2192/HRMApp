@@ -4,6 +4,7 @@ import React from "react";
 import { Controller } from "react-hook-form";
 import FormHelperText from "@mui/material/FormHelperText";
 import { makeStyles } from "@mui/styles";
+
 InputField.propTypes = {
   form: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
@@ -18,14 +19,7 @@ const useStyles = makeStyles({
   },
 });
 function InputField(props) {
-  const {
-    form,
-    name,
-    label,
-    disabled,
-    type = "string",
-    size,
-  } = props;
+  const { form, name, label, disabled, type = "string", size } = props;
   const classes = useStyles();
   return (
     <Controller
@@ -49,7 +43,14 @@ function InputField(props) {
             InputProps={{
               className: classes.input,
             }}
-
+            sx={
+              !label
+                ? {
+                    "& legend": { display: "none" },
+                    "& fieldset": { top: 0 },
+                  }
+                : {}
+            }
           />
           <FormHelperText
             style={{ color: "red", fontWeight: "bold" }}

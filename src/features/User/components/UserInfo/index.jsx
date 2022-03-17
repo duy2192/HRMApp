@@ -1,11 +1,12 @@
-import { Box, Grid, Paper, Typography } from "@mui/material";
-import React from "react";
+import { Box, Button, CircularProgress, Grid, Paper, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@mui/styles";
+import { authApi } from "api";
 
 const useStyles = makeStyles({
   root: {
     width: "100%",
-    padding:"60px"
+    padding: "60px",
   },
   label: {
     padding: "10px",
@@ -18,18 +19,42 @@ const useStyles = makeStyles({
     fontSize: "18px",
   },
 });
-function UserInfo({ user }) {
+function UserInfo({ id }) {
   const classes = useStyles();
+  const [user, setUser] = useState({});
+  const [loading  , setLoading] = useState(true);
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true)
+        const result =await authApi.get(id);
+        setUser(result.results);
+        setLoading(false)
+        console.log(result);
+      } catch (error) {}
+    })();
+  },[id]);
   return (
     <>
-      <Box >
+    {loading ? 
+        <Box
+          sx={{ display: "flex", justifyContent: "center", marginTop: "300px" }}
+        >
+          <CircularProgress disableShrink size={100} />
+        </Box>
+    :  
+      <Box>
         <Paper className={classes.root}>
-            <Typography style={{
-                paddingTop:"30px",
-                textAlign:"center",
-                // fontWeight:",
-                fontSize:"35px"
-            }}>Thông tin tài khoản</Typography>
+          <Typography
+            style={{
+              paddingTop: "30px",
+              textAlign: "center",
+              // fontWeight:",
+              fontSize: "35px",
+            }}
+          >
+            Thông tin tài khoản
+          </Typography>
 
           <Grid container>
             <Grid item lg={2} md={6} sm={5} xs={6}>
@@ -94,7 +119,22 @@ function UserInfo({ user }) {
             </Grid>
           </Grid>
         </Paper>
+        <Box className={classes.submit}>
+          <Button
+            variant="contained"
+            size="large"
+            sx={{
+              color: "#000000",
+              background: "#f5f6fa",
+              textTransform: "none",
+              marginLeft: "20px",
+            }}
+          >
+            Chỉnh sửa
+          </Button>
+        </Box>
       </Box>
+      }
     </>
   );
 }

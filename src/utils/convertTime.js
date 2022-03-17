@@ -7,3 +7,6 @@ export const convertTime=(value)=>{
    return moment(value).format('DD-MM-YYYY')
 
 }
+export const isDateBeforeToday=(date)=> {
+   return new Date(date) < new Date(new Date());
+}

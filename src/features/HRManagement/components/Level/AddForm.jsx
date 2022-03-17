@@ -31,16 +31,34 @@ function AddForm({ onSubmit }) {
     (async () => {
       try {
         const result = await levelApi.getAll();
-        setLevelList(result.results.map((item)=>({
-          value:item.id,
-          label:item.ten
-        })));
+        setLevelList(
+          result.results.map((item) => ({
+            value: item.id,
+            label: item.ten,
+          }))
+        );
       } catch (error) {}
     })();
   }, []);
 
   const schema = yup.object().shape({
     lv: yup.string().required("Chưa chọn trình độ"),
+    chuyennganh: yup
+      .string()
+      .trim()
+      .required("Chưa nhập chuyên ngành")
+      .matches(
+        /^[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+
+        "Không hợp lệ!"
+      ),
+      tungay: yup
+      .date()
+      .max(
+        yup.ref("ngaykt"),
+        "Giá trị ngày bắt đầu không thể lớn hơn giá trị kêt thúc"
+      ),
+      denngay: yup.date(),
   });
 
   const form = useForm({
@@ -72,7 +90,9 @@ function AddForm({ onSubmit }) {
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Trình độ </p>
+              <p className="label">
+                Trình độ <span className="text-danger">*</span>
+              </p>
             </div>
             <div className="col-md-6">
               <SelectField data={levelList} name="lv" form={form} />{" "}
@@ -80,15 +100,12 @@ function AddForm({ onSubmit }) {
           </div>
           <div className="row pt-1">
             <div className="col-md-4">
-              <p className="label">Chuyên ngành </p>
+              <p className="label">
+                Chuyên ngành <span className="text-danger">*</span>
+              </p>
             </div>
             <div className="col-md-6">
-              <InputField
-                size="small"
-                label="Chuyên ngành"
-                name="chuyennganh"
-                form={form}
-              />
+              <InputField size="small" name="chuyennganh" form={form} />
             </div>
           </div>
           <div className="row pt-1">
@@ -96,12 +113,7 @@ function AddForm({ onSubmit }) {
               <p className="label">Từ ngày</p>
             </div>
             <div className="col-md-6">
-              <CalendarField
-                name="tungay"
-                label="Từ ngày"
-                form={form}
-                size="small"
-              />
+              <CalendarField name="tungay" form={form} size="small" />
             </div>
           </div>
           <div className="row pt-1">
@@ -109,12 +121,7 @@ function AddForm({ onSubmit }) {
               <p className="label">Đến ngày </p>
             </div>
             <div className="col-md-6">
-              <CalendarField
-                name="denngay"
-                label="Đến ngày"
-                form={form}
-                size="small"
-              />
+              <CalendarField name="denngay" form={form} size="small" />
             </div>
           </div>
           <div className="row pt-1">
@@ -122,7 +129,7 @@ function AddForm({ onSubmit }) {
               <p className="label">Kết quả </p>
             </div>
             <div className="col-md-6">
-              <InputField size="small" label="Kết quả" name="ketqua" form={form} />{" "}
+              <InputField size="small" name="ketqua" form={form} />{" "}
             </div>
           </div>
 

@@ -13,5 +13,13 @@ export const departmentApi = {
     const url = '/department';
     return axiosClient.post(url, data);
   },
+   update(data) {
+    const url = '/department';
+    return axiosClient.patch(url, data);
+  },
+   remove(id) {
+    const url = `/department/${id}`;
+    return axiosClient.delete(url);
+  },
 };
 

@@ -17,8 +17,12 @@ import Level from "../components/Level";
 import Position from "../components/Position";
 import Reward from "../components/Reward";
 import Salary from "../components/Salary";
+import Insurance from "../components/Insurance";
 import { personnelApi } from "api";
 import NotFound from "components/NotFound";
+import Grow from "@mui/material/Grow";
+import CircularProgress from "@mui/material/CircularProgress";
+import avatar from "assets/img/avatar.jpg";
 
 const useStyles = makeStyles({
   submit: {
@@ -63,7 +67,7 @@ function a11yProps(index) {
 export default function DetailPage() {
   const [value, setValue] = React.useState(0);
   const [personnel, setPersonnel] = React.useState(0);
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
   const { personnelid } = useParams();
   const classes = useStyles();
   const handleChange = (event, newValue) => {
@@ -72,19 +76,18 @@ export default function DetailPage() {
   useEffect(() => {
     (async () => {
       try {
-        setLoading(true)
+        setLoading(true);
         const result = await personnelApi.get(personnelid);
         setPersonnel(result.results);
-        setLoading(false)
-
+        setLoading(false);
       } catch (error) {}
     })();
   }, [personnelid]);
   return (
     <>
-      {(personnel && !loading) ? (
+      {!!personnel && (
         <>
-          <Paper>
+          <Paper className={classes.root}>
             <Box
               style={{
                 paddingTop: "30px",
@@ -93,6 +96,7 @@ export default function DetailPage() {
               }}
             >
               <Avatar
+                src={avatar}
                 sx={{
                   height: "80px",
                   width: "80px",
@@ -100,101 +104,119 @@ export default function DetailPage() {
                   marginBottom: "10px",
                 }}
               ></Avatar>
-              <Typography>{personnel.ten}</Typography>
             </Box>
-
-            <Box
-              sx={{
-                flexGrow: 1,
-                bgcolor: "background.paper",
-                display: "flex",
-                height: "150vh",
-              }}
+            <Grow
+              in={true}
+              style={{ transformOrigin: "0 0 0" }}
+              {...{ timeout: 1000 }}
             >
-              <Tabs
-                orientation="vertical"
-                variant="scrollable"
-                value={value}
-                onChange={handleChange}
-                aria-label="Vertical tabs example"
+              <Box
                 sx={{
-                  borderRight: 1,
-                  borderColor: "divider",
-                  minWidth: "190px",
+                  flexGrow: 1,
+                  bgcolor: "background.paper",
+                  display: "flex",
+                  height: "150vh",
                 }}
               >
-                <Tab label="Thông tin cơ bản" {...a11yProps(0)} />
-                <Tab label="Thông tin liên hệ" {...a11yProps(1)} />
-                <Tab label="Trình độ" {...a11yProps(2)} />
-                <Tab label="Chức vụ" {...a11yProps(3)} />
-                <Tab label="Hợp đồng lao động" {...a11yProps(4)} />
-                <Tab label="Quá trình công tác" {...a11yProps(5)} />
-                <Tab label="Lương" {...a11yProps(6)} />
-                <Tab label="Khen thưởng" {...a11yProps(7)} />
-                <Tab label="Kỷ luật" {...a11yProps(8)} />
-              </Tabs>
-              <TabPanel value={value} index={0} style={{ width: "100%" }}>
-                <BasicInformation personnelid={personnelid} />
-              </TabPanel>
-              <TabPanel value={value} index={1}>
-                <Contact personnelid={personnelid} />
-              </TabPanel>
-              <TabPanel
-                value={value}
-                index={2}
-                style={{ width: "100%", height: "100%" }}
-              >
-                <Level personnelid={personnelid} />
-              </TabPanel>
-              <TabPanel
-                value={value}
-                index={3}
-                style={{ width: "100%", height: "100%" }}
-              >
-                <Position personnelid={personnelid} />
-              </TabPanel>
-              <TabPanel
-                value={value}
-                index={4}
-                style={{ width: "100%", height: "100%" }}
-              >
-                <Contract personnelid={personnelid} />
-              </TabPanel>
-              <TabPanel
-                value={value}
-                index={5}
-                style={{ width: "100%", height: "100%" }}
-              >
-                <Jobs personnelid={personnelid} />
-              </TabPanel>
-              <TabPanel
-                value={value}
-                index={6}
-                style={{ width: "100%", height: "100%" }}
-              >
-                <Salary personnelid={personnelid} />
-              </TabPanel>
-              <TabPanel
-                value={value}
-                index={7}
-                style={{ width: "100%", height: "100%" }}
-              >
-                <Reward personnelid={personnelid} />
-              </TabPanel>
-              <TabPanel
-                value={value}
-                index={8}
-                style={{ width: "100%", height: "100%" }}
-              >
-                <Discipline personnelid={personnelid} />
-              </TabPanel>
-            </Box>
+                <Tabs
+                  orientation="vertical"
+                  variant="scrollable"
+                  value={value}
+                  onChange={handleChange}
+                  aria-label="Vertical tabs example"
+                  sx={{
+                    borderRight: 1,
+                    borderColor: "divider",
+                    minWidth: "190px",
+                  }}
+                >
+                  <Tab label="Thông tin cơ bản" {...a11yProps(0)} />
+                  <Tab label="Thông tin liên hệ" {...a11yProps(1)} />
+                  <Tab label="Trình độ" {...a11yProps(2)} />
+                  <Tab label="Chức vụ" {...a11yProps(3)} />
+                  <Tab label="Hợp đồng lao động" {...a11yProps(4)} />
+                  <Tab label="Quá trình công tác" {...a11yProps(5)} />
+                  <Tab label="Lương" {...a11yProps(6)} />
+                  <Tab label="Khen thưởng" {...a11yProps(7)} />
+                  <Tab label="Kỷ luật" {...a11yProps(8)} />
+                  <Tab label="Bảo hiểm" {...a11yProps(9)} />
+                </Tabs>
+                <TabPanel value={value} index={0} style={{ width: "100%" }}>
+                  <BasicInformation personnelid={personnelid} />
+                </TabPanel>
+                <TabPanel value={value} index={1} style={{ width: "100%" }}>
+                  <Contact personnelid={personnelid} />
+                </TabPanel>
+                <TabPanel
+                  value={value}
+                  index={2}
+                  style={{ width: "100%", height: "100%" }}
+                >
+                  <Level personnelid={personnelid} />
+                </TabPanel>
+                <TabPanel
+                  value={value}
+                  index={3}
+                  style={{ width: "100%", height: "100%" }}
+                >
+                  <Position personnelid={personnelid} />
+                </TabPanel>
+                <TabPanel
+                  value={value}
+                  index={4}
+                  style={{ width: "100%", height: "100%" }}
+                >
+                  <Contract personnelid={personnelid} />
+                </TabPanel>
+                <TabPanel
+                  value={value}
+                  index={5}
+                  style={{ width: "100%", height: "100%" }}
+                >
+                  <Jobs personnelid={personnelid} />
+                </TabPanel>
+                <TabPanel
+                  value={value}
+                  index={6}
+                  style={{ width: "100%", height: "100%" }}
+                >
+                  <Salary personnelid={personnelid} />
+                </TabPanel>
+                <TabPanel
+                  value={value}
+                  index={7}
+                  style={{ width: "100%", height: "100%" }}
+                >
+                  <Reward personnelid={personnelid} />
+                </TabPanel>
+                <TabPanel
+                  value={value}
+                  index={8}
+                  style={{ width: "100%", height: "100%" }}
+                >
+                  <Discipline personnelid={personnelid} />
+                </TabPanel>
+                <TabPanel
+                  value={value}
+                  index={9}
+                  style={{ width: "100%", height: "100%" }}
+                >
+                  <Insurance personnelid={personnelid} />
+                </TabPanel>
+              </Box>
+            </Grow>
           </Paper>
         </>
-      ) : (
-          <NotFound />
-        
       )}
+      {loading && (
+        <Box
+          sx={{ display: "flex", justifyContent: "center", marginTop: "300px" }}
+        >
+          <CircularProgress disableShrink size={100} />
+        </Box>
+      )}
+
+      {!personnel && !loading && <NotFound />}
     </>
   );
 }

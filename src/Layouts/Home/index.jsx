@@ -14,7 +14,7 @@ import List from "@mui/material/List";
 import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import avatar from "assets/img/avatar.png";
+import avatar from "assets/img/avatar.jpg";
 import logo from "assets/img/logo1.png";
 import MenuUser from "components/Menu/MenuUser";
 import NotFound from 'components/NotFound';
@@ -26,9 +26,10 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import ManagementList from "./ManagementList";
 import UserFeature from "features/User";
 import DepartmentFeature from "features/Department";
+import StatisticalFeature from "features/Statistical";
 import LevelFeature from "features/Level";
 import PositionFeature from "features/Position";
-import { useSelector } from "react-redux";
+import Fade from '@mui/material/Fade';
 
 const drawerWidth = 240;
 
@@ -85,7 +86,6 @@ const mdTheme = createTheme();
 function DashboardContent() {
   const [open, setOpen] = useState(true);
   const [anchorEl, setAnchorEl] = useState(null);
-  const loggedInUser = useSelector((state) => state.user.current);
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
@@ -207,6 +207,8 @@ function DashboardContent() {
           }}
         >
           <Toolbar />
+          <Fade in={true}>
+
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Routes>
               <Route path="/" element={<Dashboard />} />
@@ -217,10 +219,11 @@ function DashboardContent() {
               <Route path="/chuc-vu/*" element={<PositionFeature />}></Route>
               <Route path="/tai-khoan/*" element={<ManageAccount />}></Route>
               <Route path="/thiet-lap/*" element={<NotFound />}></Route>
-              <Route path="/bao-cao/*" element={<NotFound />}></Route>
+              <Route path="/bao-cao/*" element={<StatisticalFeature />}></Route>
               <Route path="*" element={<NotFound />}></Route>
             </Routes>
           </Container>
+          </Fade>
         </Box>
       </Box>
     </ThemeProvider>

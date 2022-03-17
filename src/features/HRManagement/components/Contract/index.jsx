@@ -104,7 +104,7 @@ function Contract({ personnelid }) {
       setMode("");
       setRefreshKey((state) => state + 1);
     } catch (error) {
-      enqueueSnackbar("Lỗi", { variant: "error" });
+      enqueueSnackbar("Lỗi",{variant: 'error'})
     }
   };
 

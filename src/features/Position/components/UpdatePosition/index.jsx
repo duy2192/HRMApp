@@ -18,7 +18,7 @@ function UpdatePosition({ open, handleClose, position }) {
       await positionApi.remove( position.id);
       enqueueSnackbar("Xóa chức vụ thành công!", { variant: "success" });
     } catch (error) {
-      enqueueSnackbar(error.message, { variant: "error" });
+      enqueueSnackbar("Không hợp lệ",{variant: 'error'})
     }
   };
   return (

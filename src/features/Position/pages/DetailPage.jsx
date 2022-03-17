@@ -11,7 +11,6 @@ function DetailPage(props) {
       try {
         const result = await positionApi.get(id);
         setPosition(result.results);
-        console.log(result);
       } catch (error) {
         console.log(error);
       }

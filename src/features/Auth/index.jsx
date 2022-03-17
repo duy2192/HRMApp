@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import ForgotPwdPage from "./pages/ForgotPwdPage";
 import LoginRoute from "components/PrivateRoute/LoginRoute";
 import UserInfo from "./pages/UserInfoPage";
+import UnblockAccountPage from "./pages/UnblockAccountPage";
 
 function AuthFeature(props) {
   return (
@@ -12,6 +13,8 @@ function AuthFeature(props) {
         <Route path="login" element={<LoginPage />}></Route> 
       </Route>
       <Route path="forgot" element={<ForgotPwdPage />}></Route>
+      <Route path="unblock/:id" element={<UnblockAccountPage />}></Route>
+
       <Route path=":id" element={<UserInfo />}></Route>
     </Routes>
   );

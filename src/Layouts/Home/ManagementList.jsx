@@ -5,7 +5,6 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import PersonIcon from "@mui/icons-material/Person";
 import PersonOffIcon from "@mui/icons-material/PersonOff";
-import SettingsIcon from "@mui/icons-material/Settings";
 import { Box } from "@mui/material";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -14,6 +13,7 @@ import { makeStyles } from "@mui/styles";
 import * as React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
 const useStyles = makeStyles({
   root: {
     color: "#f5f6fa",
@@ -25,6 +25,7 @@ const useStyles = makeStyles({
     marginTop: "10px",
   },
 });
+
 export default function ManagementList() {
   const navigate = useNavigate();
   const classes = useStyles();
@@ -95,7 +96,7 @@ export default function ManagementList() {
         </ListItemIcon>
         <ListItemText primary="Chức vụ" />
       </ListItem>
-      {loggedInUser?.user.role == 3 && (
+      {loggedInUser?.user.role === 3 && (
         <ListItem
           className={classes.list}
           button
@@ -109,23 +110,12 @@ export default function ManagementList() {
           <ListItemText primary="Tài khoản" />
         </ListItem>
       )}
+      
       <ListItem
         className={classes.list}
         button
         onClick={() => {
-          handleClick("/thiet-lap");
-        }}
-      >
-        <ListItemIcon>
-          <SettingsIcon className={classes.icon} />
-        </ListItemIcon>
-        <ListItemText primary="Thiết lập" />
-      </ListItem>
-      <ListItem
-        className={classes.list}
-        button
-        onClick={() => {
-          handleClick("/bao-cao");
+          handleClick("/bao-cao/thong-ke-nhan-su");
         }}
       >
         <ListItemIcon>

@@ -1,7 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import CloseIcon from "@mui/icons-material/Close";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { Button, FormLabel, IconButton, Typography } from "@mui/material";
+import ArticleIcon from '@mui/icons-material/Article';
+import { Button, Grid, IconButton, Typography } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { makeStyles } from "@mui/styles";
 import { Box } from "@mui/system";
@@ -10,30 +10,24 @@ import CalendarField from "components/FormControl/CalendarField";
 import InputField from "components/FormControl/InputField";
 import SelectField from "components/FormControl/SelectField";
 import { CONTRACT_TYPES } from "constants/index";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { convertMySqlTime } from "utils/convertTime";
 import * as yup from "yup";
 import "./styles.css";
+import { isDateBeforeToday } from "utils";
+import LinearProgress from "@mui/material/LinearProgress";
 
 const useStyles = makeStyles({
-  submit: {
-    paddingRight: "100px",
-    right: 100,
-    // color: "#ff4757",
-  },
   inputFile: {
+    display: "inline",
     cursor: "pointer",
     background: "#74b9ff",
-    color: "#2f3542",
+    color: "#fff",
     border: "none",
-    borderRadius: "10px",
+    borderRadius: "5px",
     padding: "5px",
     marginTop: "15px",
-  },
-  form: {
-    // background: "#FFF",
-    // overflow: "auto",
   },
 });
 
@@ -52,6 +46,9 @@ function AddForm({ onSubmit }) {
   const [levelList, setLevelList] = useState([]);
   const [positionList, setPositionList] = useState([]);
   const [file, setFile] = useState("");
+  const [uploadMode, setUploadMode] = useState("none");
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const fileRef = useRef(null);
   useEffect(() => {
     (async () => {
       try {
@@ -85,36 +82,169 @@ function AddForm({ onSubmit }) {
   }, []);
 
   const schema = yup.object().shape({
-    ten: yup.string().required("Chưa nhập tên"),
-    cv: yup.string().required("Chưa chọn chức vụ"),
-    lv: yup.string().required("Chưa chọn trình độ"),
-    dv: yup.string().required("Chưa chọn đơn vị"),
-    email: yup.string().email().required('Chưa nhập tên nhân sự!'),
+    ten: yup
+      .string()
+      .trim()
+      .required("Bạn chưa nhập thông tin họ tên")
+      .matches(
+        /^[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+        "Họ tên không hợp lệ!"
+      ),
+    cv: yup.string().trim().required("Chưa chọn chức vụ"),
+    lv: yup.string().trim().required("Chưa chọn trình độ"),
+    dv: yup.string().trim().required("Chưa chọn đơn vị"),
+    email: yup
+      .string()
+      .trim()
+      .email("Sai định dạng email")
+      .required("Chưa nhập Email!"),
 
-    gioitinh: yup.string().required("Chưa chọn giới tính!"),
+    gioitinh: yup.string().trim().required("Chưa chọn giới tính!"),
+    ngaysinh: yup
+      .string()
+      .trim()
+      .required("Chưa nhập ngày sinh!")
+      .test("checkBirthday", "Ngày sinh không hợp lệ!", (value) => {
+        return isDateBeforeToday(value);
+      }),
     cccd: yup
       .number("Sai định dạng!")
-      .typeError("Sai định dạng")
+      .typeError("Sai CMND/CCCD")
       .required("Chưa nhập CMND/CCCD!"),
-    tp: yup.string().required("Chưa chọn Tỉnh/TP!"),
-    quan: yup.string().required("Chưa chọn Quận/Huyện!"),
-    phuong: yup.string().required("Chưa chọn Phường/Xã!"),
+    tp: yup.string().trim().required("Chưa chọn Tỉnh/TP!"),
+    quan: yup.string().trim().required("Chưa chọn Quận/Huyện!"),
+    phuong: yup.string().trim().required("Chưa chọn Phường/Xã!"),
+    diachi: yup
+      .string()
+      .trim()
+      .matches(
+        /^$|[a-zA-Z0-9_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+
+        "Địa chỉ không hợp lệ!"
+      ),
+    nguyenquan: yup
+      .string()
+      .trim()
+      .matches(
+        /^$|[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+        "Không hợp lệ!"
+      ),
+    dantoc: yup
+      .string()
+      .trim()
+      .matches(
+        /^$|[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+
+        "Không hợp lệ!"
+      ),
+    tongiao: yup
+      .string()
+      .trim()
+      .matches(
+        /^$|[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+        "Không hợp lệ!"
+      ),
+    noicap: yup
+      .string()
+      .trim()
+      .required("Chưa nhập nơi cấp")
+      .matches(
+        /^[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+        "Nơi cấp không hợp lệ!"
+      ),
     sdt: yup
       .string()
-      .typeError("Sai định dạng")
-      .required("Chưa nhập số điện thoại!"),
+      .trim()
+      .typeError("Sai số điện thoại")
+      .required("Chưa nhập số điện thoại!")
+      .test("tel", "Không hợp lệ", (value) => Number.parseInt(value) > 0),
     hsl: yup
       .number("Chưa nhập hệ số lương!")
-      .typeError("Sai định dạng")
-      .required("Chưa nhập hệ số lương!"),
+      .required("Chưa nhập hệ số lương!")
+      .typeError("Chưa nhập hệ số lương!")
+      .test(
+        "Is positive?",
+        "Hệ số lương phải lớn hơn 0!",
+        (value) => value > 0
+      ),
     hspc: yup
       .number("Chưa nhập hệ số phụ cấp")
-      .typeError("Sai định dạng")
-      .required("Chưa nhập hệ số phụ cấp!"),
+      .required("Chưa nhập hệ số phụ cấp!")
+      .typeError("Chưa nhập hệ số phụ cấp!")
+      .test(
+        "Is positive?",
+        "Hệ số phụ cấp phải lớn hơn 0!",
+        (value) => value > 0
+      ),
     luongcb: yup
       .number("Chưa nhập lương cơ bản")
-      .typeError("Sai định dạng")
-      .required("Chưa nhập lương cơ bản!"),
+      .required("Chưa nhập lương cơ bản!")
+      .typeError("Chưa nhập lương cơ bản!")
+      .test(
+        "Is positive?",
+        "Lương cơ bản phải lớn hơn 0!",
+        (value) => value > 0
+      ),
+    ngayky: yup
+      .date()
+      .max(
+        yup.ref("ngaykt"),
+        "Giá trị ngày ký không thể lớn hơn giá trị ngày kết thúc"
+      ),
+    ngaykt: yup.date(),
+    tdvh: yup
+      .string()
+      .trim()
+      .matches(
+        /^$|[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+
+        "Không hợp lệ!"
+      ),
+    tddt: yup
+      .string()
+      .trim()
+      .matches(
+        /^$|[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+        "Không hợp lệ!"
+      ),
+    noidaotao: yup
+      .string()
+      .trim()
+      .matches(
+        /^$|[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+        "Không hợp lệ!"
+      ),
+    xeploai: yup
+      .string()
+      .trim()
+      .matches(
+        /^$|[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+
+        "Không hợp lệ!"
+      ),
+    quoctich: yup
+      .string()
+      .trim()
+      .matches(
+        /^$|[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+        "Không hợp lệ!"
+      ),
+    tungay: yup
+      .date()
+      .max(
+        yup.ref("denngay"),
+        "Giá trị ngày bắt đầu không thể lớn hơn giá trị kêt thúc"
+      ),
+    denngay: yup.date(),
+    chuyennganh: yup
+      .string()
+      .trim()
+      .required("Chưa nhập chuyên ngành")
+      .matches(
+        /^[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+
+        "Không hợp lệ!"
+      ),
   });
 
   const form = useForm({
@@ -150,6 +280,9 @@ function AddForm({ onSubmit }) {
       hsl: "",
       hspc: "",
       luongcb: "",
+      tungay: new Date(),
+      denngay: new Date(),
+      chuyennganh: "",
     },
     reValidateMode: "onSubmit",
     resolver: yupResolver(schema),
@@ -158,12 +291,19 @@ function AddForm({ onSubmit }) {
     if (!onSubmit) return;
     const data = {
       ...value,
+      ngayky: convertMySqlTime(value.ngayky),
+      ngaykt: convertMySqlTime(value.ngaykt),
       ngaysinh: convertMySqlTime(value.ngaysinh),
       ngaycap: convertMySqlTime(value.ngaycap),
+      tungay: convertMySqlTime(value.tungay),
+      denngay: convertMySqlTime(value.denngay),
+
       file: file,
     };
     onSubmit(data);
-    // form.reset();
+  };
+  const handleResetForm = (value) => {
+    form.reset();
   };
 
   const { isSubmitting } = form.formState;
@@ -190,47 +330,81 @@ function AddForm({ onSubmit }) {
       console.log(e);
     }
   };
-
-  const handleUpload = async (e) => {
+  const handleOnProgressUpload = (progress) => {
+    setUploadProgress(progress);
+  };
+  const handleUpload = async () => {
     try {
-      const file = e.target.files[0];
+      const mime=["pdf","doc","docx"]
+      if(!mime.includes(fileRef.current.value.split('.').pop())) return
+      const file = fileRef.current.files[0];
       let formData = new FormData();
       formData.append("file", file);
-      const result = await uploadApi.uploadFile(formData);
-      setFile(result.results);
+      setUploadMode("pending");
+      const result = await uploadApi.uploadFile(
+        formData,
+        handleOnProgressUpload
+      );
+      setUploadMode("success");
+
+      setFile(result.results.originalname);
     } catch (error) {
       console.log(error);
     }
   };
   const handleRemoveFile = () => {
     setFile("");
+    setUploadMode("none");
   };
+
   return (
     <>
       <div className="profile-title">
-        <h3 className="">Thêm mới hồ sơ</h3>
-        <Box className={classes.submit}>
-          {isSubmitting ? (
-            <Box className={classes.progress}>
-              <CircularProgress />
+        <Grid container sx={{ paddingTop: "20px", paddingBottom: "30px" }}>
+          <Grid item xl={7} md={6} sm={6} xs={6}>
+            <h3 className="">Thêm mới hồ sơ</h3>
+          </Grid>
+          <Grid item xl={5} md={6} sm={6} xs={6}>
+            <Box className={classes.submit}>
+              {isSubmitting ? (
+                <Box className={classes.progress}>
+                  <CircularProgress />
+                </Box>
+              ) : (
+                <>
+                  <Button
+                    disabled={isSubmitting}
+                    variant="contained"
+                    type="submit"
+                    size="large"
+                    sx={{
+                      color: "#000000",
+                      background: "rgba(153, 204, 255, 0.6)",
+                      textTransform: "none",
+                    }}
+                    form="myform"
+                  >
+                    Lưu
+                  </Button>
+                  <Button
+                    disabled={isSubmitting}
+                    variant="contained"
+                    size="large"
+                    sx={{
+                      color: "#000000",
+                      background: "#f5f6fa",
+                      textTransform: "none",
+                      marginLeft: "20px",
+                    }}
+                    onClick={handleResetForm}
+                  >
+                    Xóa
+                  </Button>
+                </>
+              )}
             </Box>
-          ) : (
-            <Button
-              disabled={isSubmitting}
-              variant="contained"
-              type="submit"
-              size="large"
-              sx={{
-                color: "#000000",
-                background: "rgba(153, 204, 255, 0.6)",
-                textTransform: "none",
-              }}
-              form="myform"
-            >
-              Lưu
-            </Button>
-          )}
-        </Box>
+          </Grid>
+        </Grid>
       </div>
       <div className="thongtin p-5">
         <div className="list-thongtin">
@@ -244,17 +418,14 @@ function AddForm({ onSubmit }) {
                   </p>
                 </div>
                 <div className="col-md-6">
-                  <InputField
-                    label="Họ tên"
-                    size="small"
-                    name="ten"
-                    form={form}
-                  />
+                  <InputField size="small" name="ten" form={form} />
                 </div>
               </div>
               <div className="row pt-1">
                 <div className="col-md-4">
-                  <p className="label">Giới tính</p>
+                  <p className="label">
+                    Giới tính <span className="text-danger">*</span>
+                  </p>
                 </div>
                 <div className="col-md-6">
                   <SelectField data={gender} name="gioitinh" form={form} />
@@ -262,15 +433,12 @@ function AddForm({ onSubmit }) {
               </div>
               <div className="row pt-1">
                 <div className="col-md-4">
-                  <p className="label">Ngày sinh </p>
+                  <p className="label">
+                    Ngày sinh <span className="text-danger">*</span>
+                  </p>
                 </div>
                 <div className="col-md-6">
-                  <CalendarField
-                    name="ngaysinh"
-                    label="Ngày sinh"
-                    form={form}
-                    size="small"
-                  />
+                  <CalendarField name="ngaysinh" form={form} size="small" />
                 </div>
               </div>
               <div className="row pt-1">
@@ -278,12 +446,7 @@ function AddForm({ onSubmit }) {
                   <p className="label">Nguyên quán </p>
                 </div>
                 <div className="col-md-6">
-                  <InputField
-                    size="small"
-                    label="Nguyên quán"
-                    name="nguyenquan"
-                    form={form}
-                  />
+                  <InputField size="small" name="nguyenquan" form={form} />
                 </div>
               </div>
               <div className="row pt-1">
@@ -291,12 +454,7 @@ function AddForm({ onSubmit }) {
                   <p className="label">Dân tộc </p>
                 </div>
                 <div className="col-md-6">
-                  <InputField
-                    label="Dân tộc"
-                    size="small"
-                    name="dantoc"
-                    form={form}
-                  />
+                  <InputField size="small" name="dantoc" form={form} />
                 </div>
               </div>
               <div className="row pt-1">
@@ -304,12 +462,7 @@ function AddForm({ onSubmit }) {
                   <p className="label">Tôn giáo </p>
                 </div>
                 <div className="col-md-6">
-                  <InputField
-                    size="small"
-                    label="Tôn giáo"
-                    name="tongiao"
-                    form={form}
-                  />
+                  <InputField size="small" name="tongiao" form={form} />
                 </div>
               </div>
               <div className="row pt-1">
@@ -317,44 +470,40 @@ function AddForm({ onSubmit }) {
                   <p className="label">Quốc tịch</p>
                 </div>
                 <div className="col-md-6">
-                  <InputField
-                    size="small"
-                    label="Quốc tịch"
-                    name="quoctich"
-                    form={form}
-                  />
+                  <InputField size="small" name="quoctich" form={form} />
                 </div>
               </div>
               <div className="row pt-1">
                 <div className="col-md-4">
-                  <p className="label">Email </p>
+                  <p className="label">
+                    Email <span className="text-danger">*</span>
+                  </p>
                 </div>
                 <div className="col-md-6">
-                  <InputField
-                    size="small"
-                    label="Email"
-                    name="email"
-                    form={form}
-                  />
+                  <InputField size="small" name="email" form={form} />
                 </div>
               </div>
               <div className="row pt-1">
                 <div className="col-md-4">
-                  <p className="label">Số điện thoại </p>
+                  <p className="label">
+                    Số điện thoại <span className="text-danger">*</span>
+                  </p>
                 </div>
                 <div className="col-md-6">
                   <InputField
                     size="small"
-                    label="Số điện thoại"
                     name="sdt"
                     form={form}
                     type="number"
+                    min="0"
                   />
                 </div>
               </div>
               <div className="row pt-1">
                 <div className="col-md-4">
-                  <p className="label">Tỉnh/TP</p>
+                  <p className="label">
+                    Tỉnh/TP <span className="text-danger">*</span>
+                  </p>
                 </div>
                 <div className="col-md-6">
                   <SelectField
@@ -367,7 +516,9 @@ function AddForm({ onSubmit }) {
               </div>
               <div className="row pt-1">
                 <div className="col-md-4">
-                  <p className="label">Quận/Huyện </p>
+                  <p className="label">
+                    Quận/Huyện <span className="text-danger">*</span>
+                  </p>
                 </div>
                 <div className="col-md-6">
                   <SelectField
@@ -380,7 +531,9 @@ function AddForm({ onSubmit }) {
               </div>
               <div className="row pt-1">
                 <div className="col-md-4">
-                  <p className="label">Phường/Xã </p>
+                  <p className="label">
+                    Phường/Xã <span className="text-danger">*</span>
+                  </p>
                 </div>
                 <div className="col-md-6">
                   <SelectField data={wardList} name="phuong" form={form} />
@@ -391,12 +544,7 @@ function AddForm({ onSubmit }) {
                   <p className="label">Địa chỉ </p>
                 </div>
                 <div className="col-md-6">
-                  <InputField
-                    size="small"
-                    label="Địa chỉ "
-                    name="diachi"
-                    form={form}
-                  />
+                  <InputField size="small" name="diachi" form={form} />
                 </div>
               </div>
               <div className="row pt-1">
@@ -408,7 +556,6 @@ function AddForm({ onSubmit }) {
                 <div className="col-md-6">
                   <InputField
                     size="small"
-                    label="Số CMND / CCCD"
                     name="cccd"
                     form={form}
                     type="number"
@@ -417,28 +564,22 @@ function AddForm({ onSubmit }) {
               </div>
               <div className="row pt-1">
                 <div className="col-md-4">
-                  <p className="label">Ngày cấp</p>
+                  <p className="label">
+                    Ngày cấp <span className="text-danger">*</span>
+                  </p>
                 </div>
                 <div className="col-md-6">
-                  <CalendarField
-                    name="ngaycap"
-                    label="Ngày cấp"
-                    form={form}
-                    size="small"
-                  />
+                  <CalendarField name="ngaycap" form={form} size="small" />
                 </div>
               </div>
               <div className="row pt-1">
                 <div className="col-md-4">
-                  <p className="label">Nơi cấp </p>
+                  <p className="label">
+                    Nơi cấp <span className="text-danger">*</span>
+                  </p>
                 </div>
                 <div className="col-md-6">
-                  <InputField
-                    size="small"
-                    label="Nơi cấp"
-                    name="noicap"
-                    form={form}
-                  />
+                  <InputField size="small" name="noicap" form={form} />
                 </div>
               </div>
               <h5 className="pt-4">Trình độ</h5>
@@ -447,12 +588,7 @@ function AddForm({ onSubmit }) {
                   <p className="label">Trình độ văn hóa </p>
                 </div>
                 <div className="col-md-6">
-                  <InputField
-                    size="small"
-                    label="Trình độ văn hóa"
-                    name="tdvh"
-                    form={form}
-                  />
+                  <InputField size="small" name="tdvh" form={form} />
                 </div>
               </div>
               <div className="row pt-1">
@@ -460,12 +596,7 @@ function AddForm({ onSubmit }) {
                   <p className="label">Trình độ đào tạo </p>
                 </div>
                 <div className="col-md-6">
-                  <InputField
-                    size="small"
-                    label="Trình độ đào tạo"
-                    name="tddt"
-                    form={form}
-                  />
+                  <InputField size="small" name="tddt" form={form} />
                 </div>
               </div>
               <div className="row pt-1">
@@ -473,26 +604,33 @@ function AddForm({ onSubmit }) {
                   <p className="label">Nơi đào tạo </p>
                 </div>
                 <div className="col-md-6">
-                  <InputField
-                    size="small"
-                    label="Nơi đào tạo"
-                    name="noidaotao"
-                    form={form}
-                  />
+                  <InputField size="small" name="noidaotao" form={form} />
                 </div>
               </div>
               <div className="row pt-1">
                 <div className="col-md-4">
-                  <p className="label">Năm tốt nghiệp </p>
+                  <p className="label">
+                    Chuyên ngành <span className="text-danger">*</span>
+                  </p>
                 </div>
                 <div className="col-md-6">
-                  <InputField
-                    label="Năm tốt nghiệp"
-                    type="number"
-                    name="namtotnghiep"
-                    form={form}
-                    size="small"
-                  />
+                  <InputField size="small" name="chuyennganh" form={form} />
+                </div>
+              </div>
+              <div className="row pt-1">
+                <div className="col-md-4">
+                  <p className="label">Từ ngày</p>
+                </div>
+                <div className="col-md-6">
+                  <CalendarField name="tungay" form={form} size="small" />
+                </div>
+              </div>
+              <div className="row pt-1">
+                <div className="col-md-4">
+                  <p className="label">Đến ngày </p>
+                </div>
+                <div className="col-md-6">
+                  <CalendarField name="denngay" form={form} size="small" />
                 </div>
               </div>
               <div className="row pt-1">
@@ -500,18 +638,15 @@ function AddForm({ onSubmit }) {
                   <p className="label">Xếp loại </p>
                 </div>
                 <div className="col-md-6">
-                  <InputField
-                    size="small"
-                    label="Xếp loại"
-                    name="xeploai"
-                    form={form}
-                  />
+                  <InputField size="small" name="xeploai" form={form} />
                 </div>
               </div>
 
               <div className="row pt-1">
                 <div className="col-md-4">
-                  <p className="label">Đơn vị </p>
+                  <p className="label">
+                    Đơn vị <span className="text-danger">*</span>
+                  </p>
                 </div>
                 <div className="col-md-6">
                   <SelectField data={departmentList} name="dv" form={form} />
@@ -519,7 +654,9 @@ function AddForm({ onSubmit }) {
               </div>
               <div className="row pt-1">
                 <div className="col-md-4">
-                  <p className="label">Trình độ</p>
+                  <p className="label">
+                    Trình độ <span className="text-danger">*</span>
+                  </p>
                 </div>
                 <div className="col-md-6">
                   <SelectField data={levelList} name="lv" form={form} />
@@ -527,7 +664,9 @@ function AddForm({ onSubmit }) {
               </div>
               <div className="row pt-1">
                 <div className="col-md-4">
-                  <p className="label">Chức vụ </p>
+                  <p className="label">
+                    Chức vụ <span className="text-danger">*</span>
+                  </p>
                 </div>
                 <div className="col-md-6">
                   <SelectField data={positionList} name="cv" form={form} />
@@ -536,7 +675,9 @@ function AddForm({ onSubmit }) {
               <h5 className="pt-4">Hợp đồng</h5>
               <div className="row pt-1">
                 <div className="col-md-4">
-                  <p className="label">Loại hợp đồng </p>
+                  <p className="label">
+                    Loại hợp đồng <span className="text-danger">*</span>
+                  </p>
                 </div>
                 <div className="col-md-6">
                   <SelectField
@@ -548,28 +689,22 @@ function AddForm({ onSubmit }) {
               </div>
               <div className="row pt-1">
                 <div className="col-md-4">
-                  <p className="label">Ngày ký</p>
+                  <p className="label">
+                    Ngày ký <span className="text-danger">*</span>
+                  </p>
                 </div>
                 <div className="col-md-6">
-                  <CalendarField
-                    name="ngayky"
-                    label="Ngày ký"
-                    form={form}
-                    size="small"
-                  />
+                  <CalendarField name="ngayky" form={form} size="small" />
                 </div>
               </div>
               <div className="row pt-1">
                 <div className="col-md-4">
-                  <p className="label">Ngày kết thúc</p>
+                  <p className="label">
+                    Ngày kết thúc <span className="text-danger">*</span>
+                  </p>
                 </div>
                 <div className="col-md-6">
-                  <CalendarField
-                    name="ngaykt"
-                    label="Ngày kết thúc"
-                    form={form}
-                    size="small"
-                  />
+                  <CalendarField name="ngaykt" form={form} size="small" />
                 </div>
               </div>
 
@@ -578,31 +713,58 @@ function AddForm({ onSubmit }) {
                   <p className="label">File đính kèm</p>
                 </div>
                 <div className="col-md-6">
-                  {!!file ? (
-                    <>
-                      <Typography style={{ paddingTop: "15px" }}>
-                        <CloudUploadIcon />
-                        {file.split("/")[3]}
-                        <IconButton onClick={handleRemoveFile}>
-                          <CloseIcon />
-                        </IconButton>
-                      </Typography>
-                    </>
-                  ) : (
+                  {uploadMode !== "none" && (
+                    <Box
+                      sx={{
+                        background: "#dfe6e9",
+                        borderRadius: "4px",
+                        padding: "8px",
+                      }}
+                    >
+                      {uploadMode === "pending" && (
+                        <LinearProgress
+                          variant="determinate"
+                          value={uploadProgress}
+                        />
+                      )}
+                      {uploadMode === "success" && (
+                        <>
+                          <Box
+                            sx={{
+                              width: "250px",
+                              overflow: "hidden",
+                              whiteSpace: "nowrap",
+                              textOverflow: "ellipsis",
+                              display: "inline-block",
+                            }}
+                          >
+                            <Typography variant="span"><ArticleIcon htmlColor="#74b9ff"/>
+                              {file}
+                            </Typography>
+                          </Box>
+                          <IconButton onClick={handleRemoveFile}>
+                            <CloseIcon />
+                          </IconButton>
+                        </>
+                      )}
+                    </Box>
+                  )}
+
+                  {uploadMode === "none" && (
                     <>
                       <input
                         id="raised-button-file"
                         multiple
                         type="file"
-                        onChange={handleUpload}
-                        style={{ display: "none" }}
+                        accept="application/msword, application/pdf"
+                        ref={fileRef}
                       />
-                      <FormLabel
-                        htmlFor="raised-button-file"
+                      <Typography
                         className={classes.inputFile}
+                        onClick={handleUpload}
                       >
-                        File đính kèm
-                      </FormLabel>
+                        Upload
+                      </Typography>
                     </>
                   )}
                 </div>
@@ -611,40 +773,46 @@ function AddForm({ onSubmit }) {
               <h5 className="pt-4">Lương</h5>
               <div className="row pt-1">
                 <div className="col-md-4">
-                  <p className="label">Hệ số lương </p>
+                  <p className="label">
+                    Hệ số lương <span className="text-danger">*</span>
+                  </p>
                 </div>
                 <div className="col-md-6">
                   <InputField
                     size="small"
-                    label="Hệ số lương"
                     name="hsl"
                     form={form}
-                  />{" "}
-                </div>
-              </div>
-              <div className="row pt-1">
-                <div className="col-md-4">
-                  <p className="label">Hệ số phụ cấp</p>
-                </div>
-                <div className="col-md-6">
-                  <InputField
-                    size="small"
-                    label="Hệ số phụ cấp"
-                    name="hspc"
-                    form={form}
+                    type="number"
                   />
                 </div>
               </div>
               <div className="row pt-1">
                 <div className="col-md-4">
-                  <p className="label">Lương cơ bản</p>
+                  <p className="label">
+                    Hệ số phụ cấp <span className="text-danger">*</span>
+                  </p>
                 </div>
                 <div className="col-md-6">
                   <InputField
                     size="small"
-                    label="Lương cơ bản"
+                    name="hspc"
+                    form={form}
+                    type="number"
+                  />
+                </div>
+              </div>
+              <div className="row pt-1">
+                <div className="col-md-4">
+                  <p className="label">
+                    Lương cơ bản <span className="text-danger">*</span>
+                  </p>
+                </div>
+                <div className="col-md-6">
+                  <InputField
+                    size="small"
                     name="luongcb"
                     form={form}
+                    type="number"
                   />
                 </div>
               </div>

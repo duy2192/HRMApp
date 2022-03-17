@@ -1,5 +1,6 @@
 import Logout from '@mui/icons-material/Logout';
-import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';import Avatar from '@mui/material/Avatar';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
+import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
@@ -8,7 +9,7 @@ import { logOut } from 'features/Auth/authSlice';
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
-import avatar from 'assets/img/avatar.png';
+import avatar from 'assets/img/avatar.jpg';
 import { useNavigate } from 'react-router-dom';
 
 MenuUser.propTypes = {

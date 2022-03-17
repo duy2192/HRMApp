@@ -6,6 +6,8 @@ import { salaryApi } from "api";
 import {formatPrice } from "utils"
 import AddForm from "./AddForm";
 import { useSnackbar } from "notistack";
+import {convertTime} from "utils"
+
 const useStyles = makeStyles({
   root: {
     "& .MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
@@ -29,7 +31,11 @@ export default function Salary({ personnelid }) {
   const [refreshKey, setRefreshKey] = useState(0);
   const columns = [
     { field: "id", headerName: "ID", width: 80, type: "number" },
-    { field: "ngaybatdau", headerName: "Ngày bắt dầu", width: 250 },
+    { field: "ngaybatdau", headerName: "Ngày bắt đầu", width: 250,
+    renderCell: (e) => {
+      const date = e.row.luongcb;
+      return <Typography>{convertTime(date)}</Typography>;
+    }, },
     {
       field: "hsl",
       headerName: "Hệ số lương",

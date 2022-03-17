@@ -3,8 +3,10 @@ import { makeStyles } from "@mui/styles";
 import { DataGrid } from "@mui/x-data-grid";
 import { authApi } from "api";
 import SearchBox from "components/SearchBox";
+import { useSnackbar } from 'notistack';
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Account from "../Account";
 
 const useStyles = makeStyles({
   root: {
@@ -33,12 +35,16 @@ const useStyles = makeStyles({
 });
 export default function DataTable() {
   const navigate = useNavigate();
-  const [personnelList, setPersonnelList] = useState([]);
+  const [accountList, setAccountList] = useState([]);
   const [searchKey, setSearchKey] = useState("");
   const [pagination, setPagination] = React.useState(0);
   const [page, setPage] = React.useState(1);
   const [loading, setLoading] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [currentAccount, setCurrentAccount] = React.useState({});
+  const [refreshKey, setRefreshKey] = React.useState({});
   const classes = useStyles();
+  const {enqueueSnackbar} =useSnackbar()
 
   const queryParams = useMemo(() => {
     return {
@@ -49,7 +55,8 @@ export default function DataTable() {
   }, [page, searchKey]);
 
   const handleOnClick = (e) => {
-    navigate(`${e.id}`);
+    setCurrentAccount(e.row)
+    setOpen(true)
   };
   const handleSearchBox=(value)=>{
     setSearchKey(value)
@@ -59,14 +66,14 @@ export default function DataTable() {
       try {
         setLoading(true);
         const result = await authApi.getAll(queryParams);
-        setPersonnelList(result.results);
+        setAccountList(result.results);
         setPagination(result.pagination);
         setLoading(false);
       } catch (error) {
         console.log(error);
       }
     })();
-  }, [queryParams, searchKey]);
+  }, [queryParams, searchKey,refreshKey]);
   const columns = [
     { field: "id", headerName: "ID", width: 80, type: "number" },
     { field: "name", headerName: "Họ Tên", width: 250 },
@@ -102,6 +109,24 @@ export default function DataTable() {
   const handleAddClick = () => {
     navigate("/tai-khoan/them");
   };
+  const handleClose=()=>{
+    setOpen(false)
+    setRefreshKey(refreshKey+1)
+
+  }
+  const handleChangeRole=async(value)=>{
+    try {
+      await authApi.changeRole({...value,id:currentAccount.id})
+      enqueueSnackbar("Thành công!",{variant: 'success'})
+    } catch (error) {
+      enqueueSnackbar("Lỗi!",{variant: 'error'})
+
+    }
+  }
+  const handleBlockAccount=async(value)=>{
+      enqueueSnackbar("Thử lại sau!!!",{variant: 'error'})
+  }
+
   return (
     <Box className={classes.root}>
             <Box style={{ paddingLeft: "25px", paddingTop: "10px",display:"flex",justifyContent:"space-between" }}>
@@ -123,7 +148,7 @@ export default function DataTable() {
         </Box>
       <DataGrid
         onPageChange={handlePageChange}
-        rows={personnelList}
+        rows={accountList}
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[10]}
@@ -136,6 +161,7 @@ export default function DataTable() {
         hideFooterSelectedRowCount
         onRowDoubleClick={handleOnClick}
       />
+      <Account open={open} account={currentAccount} handleClose={handleClose} onSubmit={handleChangeRole} onBlock={handleBlockAccount}/>
     </Box>
   );
 }

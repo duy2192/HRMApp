@@ -13,7 +13,7 @@ function AddPersonnel({open,handleClose}) {
             await positionApi.create(value)
             enqueueSnackbar("Thêm chức vụ thành công!",{variant: 'success'})
         } catch (error) {
-            enqueueSnackbar(error.message,{variant: 'error'})
+            enqueueSnackbar("Không hợp lệ",{variant: 'error'})
         }
     }
     return (

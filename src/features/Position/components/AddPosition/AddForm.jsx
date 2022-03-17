@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 import {
   Button,
   CircularProgress,
@@ -8,15 +8,14 @@ import {
   DialogContent,
   IconButton,
   Typography,
-} from '@mui/material';
-import { Close } from '@mui/icons-material';
-import { makeStyles } from '@mui/styles';
-import InputField from 'components/FormControl/InputField';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { Box } from '@mui/system';
-
+} from "@mui/material";
+import { Close } from "@mui/icons-material";
+import { makeStyles } from "@mui/styles";
+import InputField from "components/FormControl/InputField";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useForm } from "react-hook-form";
+import { Box } from "@mui/system";
 
 AddForm.propTypes = {
   open: PropTypes.bool,
@@ -26,64 +25,75 @@ AddForm.propTypes = {
 const useStyles = makeStyles({
   root: {},
   closeButton: {
-    width: '48px',
-    top: '16px',
-    left: '90%',
+    width: "48px",
+    top: "16px",
+    left: "90%",
   },
   addButton: {
-    marginLeft: '20px',
-    background: '#0984e3',
-    borderRadius: '10px',
-    fontSize: '20px',
-    padding: '5px',
-    color: '#f5f6fa',
-    width: '100%',
-    textAlign: 'center',
-    cursor: 'pointer',
+    marginLeft: "20px",
+    background: "#0984e3",
+    borderRadius: "10px",
+    fontSize: "20px",
+    padding: "5px",
+    color: "#f5f6fa",
+    width: "100%",
+    textAlign: "center",
+    cursor: "pointer",
   },
   title: {
-    fontWeight: 'bold',
-    fontSize: '25px',
-    textAlign: 'center',
+    fontWeight: "bold",
+    fontSize: "25px",
+    textAlign: "center",
   },
   submit: {
-    top: '0',
+    top: "0",
   },
   progress: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 function AddForm(props) {
-  const { open, handleClose,onSubmit=null } = props;
+  const { open, handleClose, onSubmit = null } = props;
   const classes = useStyles();
 
   const schema = yup.object().shape({
-    ten: yup.string().required('Chưa nhập tên chức vụ!'),
+    ten: yup
+      .string()
+      .trim()
+      .required("Chưa nhập tên chức vụ!")
+      .matches(
+        /^[a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+$/,
+        "Tên chức vụ không hợp lệ!"
+      ),
     mota: yup.string(),
   });
   const form = useForm({
     defaultValues: {
-      ten: '',
-      mota: '',
+      ten: "",
+      mota: "",
     },
-    reValidateMode: 'onSubmit',
+    reValidateMode: "onSubmit",
 
     resolver: yupResolver(schema),
   });
   const handleSubmit = async (value) => {
-    if(onSubmit) await onSubmit(value)
+    if (onSubmit) await onSubmit(value);
     form.reset({
-      ten: '',
-      mota: '',
-    })
+      ten: "",
+      mota: "",
+    });
   };
   const { isSubmitting } = form.formState;
 
   return (
     <Dialog open={open} onClose={handleClose} disableEscapeKeyDown fullWidth>
-      <IconButton size="small" className={classes.closeButton} onClick={handleClose}>
+      <IconButton
+        size="small"
+        className={classes.closeButton}
+        onClick={handleClose}
+      >
         <Close />
       </IconButton>
       <Container className={classes.title}>
@@ -92,8 +102,18 @@ function AddForm(props) {
       <DialogContent>
         <Container>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
-            <InputField name="ten" label="Tên chức vụ" form={form} disabled={isSubmitting} />
-            <InputField name="mota" label="Mô tả" form={form} disabled={isSubmitting} />
+            <InputField
+              name="ten"
+              label="Tên chức vụ"
+              form={form}
+              disabled={isSubmitting}
+            />
+            <InputField
+              name="mota"
+              label="Mô tả"
+              form={form}
+              disabled={isSubmitting}
+            />
             {isSubmitting ? (
               <Box className={classes.progress}>
                 <CircularProgress />

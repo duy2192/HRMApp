@@ -46,7 +46,7 @@ function Jobs({ personnelid }) {
     {
       field: "ngaybatdau",
       headerName: "Ngày bắt đầu",
-      width: 250,
+      width: 150,
       renderCell: (e) => {
         const date = e.row.ngaybatdau;
         return <Typography>{convertTime(date)}</Typography>;
@@ -59,6 +59,15 @@ function Jobs({ personnelid }) {
       renderCell: (e) => {
         const name = e.row.dv.ten;
         return <Typography>{"Làm việc tại " + name}</Typography>;
+      },
+    },
+    {
+      field: "cv",
+      headerName: "Chức vụ",
+      width: 180,
+      renderCell: (e) => {
+        const name = e.row.cv.ten;
+        return <Typography>{name}</Typography>;
       },
     },
     {

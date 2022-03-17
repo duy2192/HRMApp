@@ -36,6 +36,10 @@ export const authApi = {
     const url = '/auth/changepwd';
     return axiosClient.patch(url, data);
   },
+   changeRole(data) {
+    const url = '/auth/changerole';
+    return axiosClient.patch(url, data);
+  },
 
 };
 

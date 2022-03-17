@@ -6,6 +6,7 @@ import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import AddForm from "./AddForm";
 import DeleteIcon from "@mui/icons-material/Delete";
+import {convertTime} from "utils"
 
 const useStyles = makeStyles({
   root: {
@@ -46,7 +47,12 @@ export default function Position({ personnelid }) {
         return <Typography>{name}</Typography>;
       },
     },
-    { field: "ngaybonhiem", headerName: "Ngày bổ nhiệm", width: 250 },
+    { field: "ngaybonhiem", headerName: "Ngày bổ nhiệm", width: 250,
+    renderCell: (e) => {
+      const date = e.row.lv.ngaybonhiem;
+      return <Typography>{convertTime( date)}</Typography>;
+    },    
+  },
     {
       field: "action",
       headerName: "",
