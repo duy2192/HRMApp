@@ -1,4 +1,4 @@
-import { TextField, OutlinedInput } from "@mui/material";
+import { TextField } from "@mui/material";
 import PropTypes from "prop-types";
 import React from "react";
 import { Controller } from "react-hook-form";

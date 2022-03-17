@@ -2,8 +2,8 @@ import axios from 'axios';
 import fileDownload from 'js-file-download'
 
 const axiosClient = axios.create({
-  // baseURL: `${process.env.REACT_APP_SERVER_HOST}api`,
-  baseURL: `http://localhost:8080/api`,
+  baseURL: `${process.env.REACT_APP_SERVER_HOST}api`,
+  // baseURL: `http://localhost:8080/api`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -54,7 +54,7 @@ axiosClient.interceptors.response.use(
     }
     throw new Error(data.message);
 
-    return Promise.reject(data.message);
+    // return Promise.reject(data.message);
   }
 );
 

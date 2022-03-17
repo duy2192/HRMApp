@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { checkToken } from "utils/common";
-import { useEffect,useState } from "react";
+// import { checkToken } from "utils/common";
+// import { useEffect,useState } from "react";
 
 export default function PrivateRoute(props) {
   const loggedInUser = useSelector((state) => state.user.current);
