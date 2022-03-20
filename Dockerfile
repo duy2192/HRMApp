@@ -3,7 +3,6 @@ FROM node:16.14-alpine as build-stage
 WORKDIR /app
 
 COPY package.json .
-COPY yarn.lock .
 RUN yarn install
 COPY . .
 RUN yarn build
@@ -23,7 +22,7 @@ EXPOSE 80
 # Copy .env file and shell script to container
 WORKDIR /usr/share/nginx/html
 COPY ./env.sh .
-COPY .env .
+COPY default.env .
 
 # Add bash
 RUN apk add --no-cache bash
