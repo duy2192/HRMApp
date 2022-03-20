@@ -49,7 +49,7 @@ export default function Position({ personnelid }) {
     },
     { field: "ngaybonhiem", headerName: "Ngày bổ nhiệm", width: 250,
     renderCell: (e) => {
-      const date = e.row.lv.ngaybonhiem;
+      const date = e.row.cv.ngaybonhiem;
       return <Typography>{convertTime( date)}</Typography>;
     },    
   },

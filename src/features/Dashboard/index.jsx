@@ -10,7 +10,7 @@ function Dashboard(props) {
               <h3>Tổng Quan</h3>
               <div className="btn-overview mx-auto">
                 <button className="btn-report">
-                  <a href="tluhrm.tk" className="link-report">
+                  <a href="https://tluhrm.tk" className="link-report">
                     Báo Cáo
                   </a>
                 </button>
