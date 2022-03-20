@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   app:
-    image: duyanh29/hrmapp:latest
+    image: duyanh2912/hrmapp:latest
     ports:
       - "8000:3000"
     env_file: ./.env.production
