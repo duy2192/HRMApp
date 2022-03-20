@@ -4,6 +4,6 @@ services:
   app:
     image: duyanh2912/hrmapp:latest
     ports:
-      - "8000:3000"
+      - "8000:80"
     env_file: ./.env.production
     restart: unless-stopped
