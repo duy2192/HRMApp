@@ -55,7 +55,7 @@ function AddForm({ onSubmit }) {
       tungay: yup
       .date()
       .max(
-        yup.ref("ngaykt"),
+        yup.ref("denngay"),
         "Giá trị ngày bắt đầu không thể lớn hơn giá trị kêt thúc"
       ),
       denngay: yup.date(),
