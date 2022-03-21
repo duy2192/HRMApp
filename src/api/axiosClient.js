@@ -2,8 +2,8 @@ import axios from 'axios';
 import fileDownload from 'js-file-download'
 
 const axiosClient = axios.create({
-  baseURL: `${process.env.REACT_APP_SERVER_HOST}api`,
-  // baseURL: `http://localhost:8080/api`,
+  // baseURL: `${process.env.REACT_APP_SERVER_HOST}api`,
+  baseURL: `https://api.tluhrm.cf/api`,
   headers: {
     'Content-Type': 'application/json',
   },
