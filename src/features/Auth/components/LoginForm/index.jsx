@@ -90,7 +90,7 @@ function LoginForm(props) {
           disabled={isSubmitting}
         />
         <Typography className={classes.forgot} >
-          <i onClick={()=>navigate("/auth/forgot")}>Quên mật khẩu?</i>
+          <i onClick={()=>navigate("/auth/forgot")}>Quên mật khẩu</i>
         </Typography>
         {isSubmitting ? (
           <Box className={classes.progress}>
